@@ -2,7 +2,11 @@
 #https://lost-stats.github.io/Model_Estimation/Research_Design/event_study.html
 #https://lost-stats.github.io/Model_Estimation/Research_Design/two_by_two_difference_in_difference.html
 #setwd("C:/Users/USER/Desktop/DID roads/")
-#shell.exec('descarga_bases.bat')
+# Downloading tabless
+global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
+shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
+
+
 
 #load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
 lista = c('readr','readxl','sqldf','plyr', 
@@ -10,9 +14,6 @@ lista = c('readr','readxl','sqldf','plyr',
           'dplyr','fixest' , 'gargle' , 'stringr'
           #, 'bigrquery' 
 )
-# packageurl <- "https://cran.r-project.org/src/contrib/Archive/cpp11/cpp11_0.4.2.tar.gz"
-# install.packages(packageurl, repos=NULL, type="source")
-# install.packages("arrow", repos = c(arrow = "https://nightlies.apache.org/arrow/r", getOption("repos")))
 for (i in 1:length(lista) ) {
   if(lista[i] %in% rownames(installed.packages()) == FALSE) {
     install.packages(lista[i])
@@ -23,17 +24,18 @@ for (i in 1:length(lista) ) {
  
 gc()
 ########################## loading full data ################################## 
-setwd("C:/Users/USER/Desktop/DID roads/Data")
-temp = list.files("C:/Users/USER/Desktop/DID roads/Data",pattern="*.parquet")
+
+setwd(paste0(global_path ,'Data'))
+temp = list.files("./",pattern="*.parquet")
 
  
 list2env(
   lapply(setNames(temp, make.names(gsub("*.parquet$", "", temp))), 
          arrow::read_parquet), envir = .GlobalEnv)
 
-base_ols <- read_csv("C:/Users/USER/Desktop/DID roads/Data/base_ols.csv")
-colnames(base_ols)
-summary(lm(data = base_ols, math_c~DISTANCE  + factor(treat_) ) )
+# base_ols <- read_csv("base_ols.csv")
+# colnames(base_ols)
+# summary(lm(data = base_ols, math_c~DISTANCE  + factor(treat_) ) )
 
  
 rm(temp) 
@@ -41,5 +43,5 @@ rm(lista)
 rm(i)
 ###############3
 #save.image("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
-source('C:/Users/USER/Desktop/DID roads/scripts/functions.R')
-
+source(paste0(global_path ,'scripts/functions.R'))
+ 

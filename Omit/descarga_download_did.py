@@ -7,6 +7,7 @@ import pandas as pd
 
 # Download query results.
 
+
 def from_bq_to_pc (base_name ,
                    query_string  ,  
                    service_account  
@@ -23,25 +24,29 @@ def from_bq_to_pc (base_name ,
      
     credentials = sa.Credentials.from_service_account_info( service_account   )  
     bqclient = bigquery.Client(credentials=credentials, project= credentials.project_id,)
-    create_replace_final_table = """ 
-                                CREATE OR REPLACE TABLE  `lee-javeriana.01_road_to_the_future.01_roads_to_the_future` 
-                                OPTIONS ( ) AS
+    # create_replace_final_table = """ 
+    #                             CREATE OR REPLACE TABLE  `lee-javeriana.01_road_to_the_future.01_roads_to_the_future` 
+    #                             OPTIONS ( ) AS
 
-                                SELECT *,  'base_10p' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_10p`  
-                                UNION ALL
-                                SELECT *,  'base_ai' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ai`  
-                                UNION ALL
-                                SELECT *,  'base_ic' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ic`  
-                                UNION ALL
-                                SELECT *,  'base_ent' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ent`  
-                                """
-    bqclient.query(create_replace_final_table  )
+    #                             SELECT *,  'base_10p' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_10p`  
+    #                             UNION ALL
+    #                             SELECT *,  'base_ai' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ai`  
+    #                             UNION ALL
+    #                             SELECT *,  'base_ic' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ic`  
+    #                             UNION ALL
+    #                             SELECT *,  'base_ent' fuente FROM `lee-javeriana.01_road_to_the_future.view_base_ent`  
+    #                             """
+    # job_config = bigquery.QueryJobConfig()
+    # job_config.allow_large_results = True
+    # query_job = bqclient.query( create_replace_final_table,  location='US',  job_config=job_config)  # API request - starts the query
+    # query_job.result() 
+
+     
     dataframe = ( bqclient.query( query_string.format(base_name) ).result().to_dataframe() )
 
     dataframe.to_parquet(f'{base_name}.parquet')
     print(dataframe.head())
     return print(dataframe.head())
-
 
 ##############################
 query =  """SELECT * except(fuente) 
