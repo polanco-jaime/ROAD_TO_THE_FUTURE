@@ -4,7 +4,7 @@
 #setwd("C:/Users/USER/Desktop/DID roads/")
 # Downloading tabless
 global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
-shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
+#shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
 
 
 
@@ -44,4 +44,4 @@ rm(i)
 ###############3
 #save.image("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
 source(paste0(global_path ,'scripts/functions.R'))
- 
+warning("the data of project had been read")

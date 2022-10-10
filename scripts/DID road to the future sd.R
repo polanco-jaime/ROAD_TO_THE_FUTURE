@@ -2,8 +2,8 @@
 ################################################################
 ## si tab no funion  "Alt + Shift + [".
 options(scipen=111)
- 
-source('C:/Users/USER/Desktop/DID roads/scripts/Reading_data.R')
+
+source(paste0(global_path ,'scripts/Reading_data.R'))
 ############# Section 1 ############################
 #### TWFE ####
 ###  TWFE for Math
@@ -16,7 +16,7 @@ source('C:/Users/USER/Desktop/DID roads/scripts/Reading_data.R')
 ###
 library(fixest)
 ###### Ultimas transformaciones
-
+ 
 if (1==1){
   
   base_ic$finished_uni    =     base_ic$Participate_saberpro_sd 
@@ -34,7 +34,7 @@ library(fixest)
 #### TWFE ####
 #################################################
 if(1==1){
-  kilometros = c(1000,1500,2000,2500,3000,3500,4000,4500)
+  kilometros = c(500,1000,1500,2000,2500,3000,3500,4000,4500)
   reference_time = -1
   
   tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
@@ -86,6 +86,8 @@ if(1==1){
     }
     
   }
+  
+  fixest::coefplot(TWFE_Math_base_ent[["Score at 500 Meters"]])
   
   for (j in tablas) {
     print(j)
@@ -141,7 +143,7 @@ if(1==1){
  
 
  
-
+fixest::coefplot(TWFE_Reading_base_10p[["Score at 500 Meters"]])
 
 
 
