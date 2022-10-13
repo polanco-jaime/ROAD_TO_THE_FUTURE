@@ -439,7 +439,7 @@ event_study_plot = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
     ggplot2::geom_vline(xintercept = -1, linetype = "dashed") + 
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + 
     ggplot2::ggtitle(TITULO)+ 
-    ggplot2::geom_tile(colour="white", size=0.25) +
+    # ggplot2::geom_tile(colour="white", size=0.25) +
     ggplot2::theme(  plot.title = element_text(hjust = 0.5, vjust = 0.5),
             axis.line.x = element_line(color="steelblue4", size = 0.5),
             axis.line.y = element_line(color="steelblue4", size = 0.5)) +
@@ -487,12 +487,12 @@ Callaway_table = function(buffer,  tabla, anticipation,  yname ){
          tname = "year",anticipation = anticipation,
          data = subset(tabla1, tabla1$buffer_km == buffer),
          allow_unbalanced_panel= T, panel = F, 
-         clustervars =  "id_name" )
+         clustervars =  "id_name"  ,   cband = F )
   
   modelo_att <- aggte( ### getting the att stimation for a DiD
     att_gt_  , ### getting the att stimation for a DiD Dynamic
     type = "dynamic",
-    na.rm = TRUE)
+    na.rm = TRUE, alp = 0.05 , bstrap=T )
   
   periodos=  modelo_att[[4]]
   coeficiente = modelo_att[[5]]

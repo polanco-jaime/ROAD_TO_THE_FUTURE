@@ -28,7 +28,7 @@ dev.off()
 png(paste0("graph/SA_Math_base_10p_buffers",".png"),  width = 1030, height = 598)
 event_study_plot( results_by_buffer(SA_Math_base_10p ) )
 dev.off() 
-rm(SA_math_naturaleza_base_10p)
+# rm(SA_math_naturaleza_base_10p)
 ## Exportar imagen por naturaleza 
  
 
@@ -74,7 +74,6 @@ dev.off()
 png(paste0("graph/SA_Reading_base_10p_buffers",".png"),  width = 1030, height = 598)
 event_study_plot( results_by_buffer(SA_Reading_base_10p ) )
 dev.off() 
-rm(SA_reading_naturaleza_base_10p)
 ## Exportar imagen por naturaleza 
 
  

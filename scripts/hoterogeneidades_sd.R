@@ -2,7 +2,6 @@ naturaleza = unique(base_10p$cole_naturaleza)
 reference_time = -1
 
 tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
-base_ai$frac_trabaja_sd_nat
 ############### Naturaleza
 
 
@@ -26,13 +25,13 @@ if (1==1){
       #df = df %>% subset(df$time_to_treat >= -8)
       ####### Modelos
       MODEL = feols(reading_c_sd ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
-                    |    year,                             ## FEs
-                    cluster = ~ cole_cod_dane,                              ## Clustered SEs
+                    | id_name + year,                               ## FEs
+                    cluster = ~ id_name + DIVIPOLA_MUN,                                        ## Clustered SEs
                     data = subset(df, df$buffer_km==1000  & df$cole_naturaleza == i  ) )
       
       MODEL_SA = feols( reading_c_sd ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
-                        |    year,                             ## FEs
-                       cluster = ~ cole_cod_dane,                         ## Clustered SEs
+                        | id_name + year,                               ## FEs
+                        cluster = ~ id_name + DIVIPOLA_MUN,                               ## Clustered SEs
                         data = subset(df,df$buffer_km==1000  & df$cole_naturaleza == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -79,13 +78,13 @@ if (1==1){
       df = df %>% subset(df$time_to_treat >= -8)
       ####### Modelos
       MODEL = feols(math_c_sd ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
-                    |   year,                             ## FEs
-                    cluster = ~ cole_cod_dane,                              ## Clustered SEs
+                    | id_name + year,                               ## FEs
+                    cluster = ~ id_name + DIVIPOLA_MUN,                                    ## Clustered SEs
                     data = subset(df, df$buffer_km==1000  & df$cole_naturaleza == i  ) )
       
       MODEL_SA = feols(  math_c_sd ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
-                         |   year,                             ## FEs
-                         cluster = ~ cole_cod_dane,                         ## Clustered SEs
+                         | id_name + year,                               ## FEs
+                         cluster = ~ id_name + DIVIPOLA_MUN,                                ## Clustered SEs
                         data = subset(df,df$buffer_km==1000  & df$cole_naturaleza == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -127,13 +126,13 @@ if (1==1){
       df = df %>% subset(df$time_to_treat >= -8)
       ####### Modelos estu_trabaja 
       MODEL = feols(frac_trabaja_sd ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
-                    |  cole_cod_dane+ year,                             ## FEs
-                    cluster = ~ cole_cod_dane,                              ## Clustered SEs
+                    | id_name + year,                               ## FEs
+                    cluster = ~ id_name + DIVIPOLA_MUN,                                ## Clustered SEs
                     data = subset(df, df$buffer_km==1000  & df$cole_naturaleza == i  ) )
       
       MODEL_SA = feols( frac_trabaja_sd ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
-                        |  cole_cod_dane+ year,                             ## FEs
-                        cluster = ~ cole_cod_dane,                         ## Clustered SEs
+                        | id_name + year,                               ## FEs
+                        cluster = ~ id_name + DIVIPOLA_MUN,                            ## Clustered SEs
                         data = subset(df,df$buffer_km==1000  & df$cole_naturaleza == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -189,13 +188,13 @@ for (j in tablas) {
     ####### Modelos
     base_ai$
     MODEL = feols(estu_trabaja ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
-                  |  cole_cod_dane+ year,                             ## FEs
-                  cluster = ~ cole_cod_dane,                              ## Clustered SEs
+                  | id_name + year,                               ## FEs
+                  cluster = ~ id_name + DIVIPOLA_MUN,                               ## Clustered SEs
                   data = subset(df, df$buffer_km==1000  & df$cole_naturaleza == i  ) )
     
     MODEL_SA = feols( estu_trabaja ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
-                      |  cole_cod_dane+ year,                             ## FEs
-                      cluster = ~ cole_cod_dane,                         ## Clustered SEs
+                      | id_name + year,                               ## FEs
+                      cluster = ~ id_name + DIVIPOLA_MUN,                            ## Clustered SEs
                       data = subset(df,df$buffer_km==1000  & df$cole_naturaleza == i ) )
     
     name_in_enviroment = paste0(  "Score at ", i, " Meters")
