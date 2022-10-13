@@ -95,6 +95,38 @@ dev.off()
 
 #################################################################
 
+
+lista_modelo = list('Private schools' =    (SA_labor_force_base_10p[["Score at PRIV Meters"]] ) ,
+                    'Public schools' =   (SA_labor_force_base_10p[["Score at PUBL Meters"]] ),
+                    'All sample schools' = ( SA_labor_force_base_10p[["Score at All sample Meters"]]) )
+
+
+inrange( results_by_buffer(lista_modelo) ,   periodo= 'term')
+
+png(paste0("graph/", "SA_labor_force_by_nature_10p"),  width = 1030, height = 598)
+event_study_plot(inrange( results_by_buffer(lista_modelo) ,   periodo= 'term'), seperate = F, 
+                 TITULO= 'Sun and Abraham (2020):\n Heterogeneities in reading scores ' ) 
+
+dev.off()
+
+
+#################################################################
+
+
+lista_modelo = list('Private schools' =    (SA_labor_force_base_10p[["Score at PRIV Meters"]] ) ,
+                    'Public schools' =   (SA_labor_force_base_10p[["Score at PUBL Meters"]] ),
+                    'All sample schools' = ( SA_labor_force_base_10p[["Score at All sample Meters"]]) )
+
+
+inrange( results_by_buffer(lista_modelo) ,   periodo= 'term')
+
+png(paste0("graph/", "SA_labor_force_by_nature_10p"),  width = 1030, height = 598)
+event_study_plot(inrange( results_by_buffer(lista_modelo) ,   periodo= 'term'), seperate = F, 
+                 TITULO= 'Sun and Abraham (2020):\n Heterogeneities in reading scores ' ) 
+
+dev.off()
+
+####
 #################################################################
 #####################     Teachers                 ###############
 #################################################################

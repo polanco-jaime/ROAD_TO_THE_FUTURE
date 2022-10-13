@@ -292,6 +292,8 @@ if(3==3){
     for (i in kilometros) {
       print(Sun_Abraham_Modelos)
       df = get(tabla)
+      df <- subset(df, df$year>= 2012)
+      tryCatch( {
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
@@ -324,6 +326,8 @@ if(3==3){
       } else {
         message('no esta en las tabkas')
       }
+      }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}
+      )
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -344,6 +348,8 @@ if(3==3){
     for (i in kilometros) {
       print(Sun_Abraham_Modelos)
       df = get(tabla)
+      df <- subset(df, df$year>= 2012)
+      tryCatch( {
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
@@ -376,6 +382,8 @@ if(3==3){
       } else {
         message('no esta en las tabkas')
       }
+      }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}
+      )
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -384,8 +392,8 @@ if(3==3){
 
 fixest::iplot( 
   list(SA_total_profes_preg_base_10p[["Score at 1000 Meters"]] 
-       # ,
-       # SA_total_profes_preg_base_ai[["Score at 1000 Meters"]],
+         ,
+         SA_total_profes_preg_base_ai[["Score at 1000 Meters"]] 
        # SA_total_profes_preg_base_ent[["Score at 1000 Meters"]] , 
        # SA_total_profes_preg_base_ic[["Score at 1000 Meters"]]
        ) 
