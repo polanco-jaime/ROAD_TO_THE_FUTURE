@@ -574,9 +574,51 @@ Gardner_table   = function( yname, df ) {
   return(MODELO)
 }
 
+base = base_10p
 
+colnames(base)['math_c']
+ATT_biased  <- function(base, Y, treat, period_var ){
+  ### dependent
+  var = Y
+  base$Y = base[[Y]]
+  base = dplyr::select(base, -var)
+  ### Treatment
+  var = treat
+  base$treatment = base[[treat]]
+  base = dplyr::select(base, -var)
+  #############################
+  mini_time = min(base[[period_var]], na.rm = T)
+  maxi_time = max(base[[period_var]], na.rm = T)
+  
+  before = subset(base , base[[period_var]] == mini_time)
+  after = subset(base , base[[period_var]] == maxi_time)
+  
+  before_est =  as.data.frame(summary(lm(data= before, Y~treatment))[["coefficients"]] )
+  after_est =  as.data.frame( summary(lm(data= after, Y~treatment))[["coefficients"]] )
+  before_est$esti = row.names(before_est)
+  before_est$period = 'before'
+  row.names(before_est) <- NULL   
+  
+  after_est$esti = row.names(after_est)
+  after_est$period = 'after'
+  row.names(after_est) <- NULL   
+  after_est = subset(after_est, after_est$esti =='treatment')
+  before_est = subset(before_est, before_est$esti =='treatment')
+  delta = data.frame(
+  'estimate' = as.numeric(after_est[[1]])  -  as.numeric(before_est[[1]]) ,
+  'Std. Error' = mean(as.numeric(after_est[[2]]) , as.numeric(before_est[[2]])),
+  't value' = mean(as.numeric(after_est[[3]]) , as.numeric(before_est[[3]])),
+  'Pr(>|t|)' = mean(as.numeric(after_est[[4]]) , as.numeric(before_est[[4]])),
+  'esti' = 'DiD', 'period' = 'ATT'
+  )
+  colnames(delta)   = colnames(after_est)
+  appended_ = rbind(after_est, before_est)
+  appended_ = rbind(appended_, delta)
+    return( appended_ )
+}
 
-
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
 
 Descriptive_statistics <- function(base, heterogenidad, unidades_de_info,tratamiento, lista ) {
   library(tidyr)

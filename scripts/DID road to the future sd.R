@@ -19,6 +19,7 @@ source(paste0(global_path ,'scripts/Reading_data.R'))
 if (1==1){
   
   base_ic$finished_uni    =     base_ic$Participate_saberpro_sd 
+  base_50p$finished_uni   =    base_50p$Participate_saberpro_sd 
   base_10p$finished_uni   =    base_10p$Participate_saberpro_sd  
   base_ai$finished_uni    =    base_ai$Participate_saberpro_sd  
   base_ent$finished_uni   =    base_ent$Participate_saberpro_sd  
@@ -31,7 +32,7 @@ if (1==1){
 #### TWFE ####
 #################################################
 if(1==1){
-  kilometros = c(1000,1500,2000,2500,3000,3500,4000,4500)
+  kilometros = c(1000  ,1500,2000,2500,3000,3500,4000,4500)
   reference_time = -1
   
   tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
@@ -53,18 +54,19 @@ if(1==1){
       ### TWFE
       MODEL = feols( math_c_sd ~ i(time_to_treat, treat_, ref = reference_time)    ## Our key interaction: time × treatment status
                      | id_name + year   ,                             ## FEs
-                     cluster = ~ id_name + DIVIPOLA_MUN,                              ## Clustered SEs
+                     cluster = ~ id_name ,                              ## Clustered SEs
                      data = subset(df, df$buffer_km == i )
       )
       
       ########################################
       ### Sun And Abraham
-       
-      MODEL_SA = feols( math_c_sd ~ sunab(year_treated_sa, year)    ## The only thing that's changed
-                        | id_name + year,                             ## FEs
-                        cluster = ~ id_name + DIVIPOLA_MUN,                         ## Clustered SEs
+      table(df$DIVIPOLA_MUN)
+      
+      MODEL_SA = feols( math_c_sd ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1)   )    ## The only thing that's changed
+                        | id_name + year ,                             ## FEs
+                        cluster = ~ id_name ,                         ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
-
+      summary(MODEL_SA)
       ######################################## 
       name_in_enviroment = paste0("Score at ", i, " Meters")
       #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
@@ -110,15 +112,15 @@ if(1==1){
       ### TWFE
       MODEL = feols( reading_c_sd ~ i(time_to_treat, treat_, ref = reference_time)    ## Our key interaction: time × treatment status
                      | id_name + year,                             ## FEs
-                     cluster = ~ id_name + DIVIPOLA_MUN,                             ## Clustered SEs
+                     cluster = ~ id_name ,                             ## Clustered SEs
                      data = subset(df, df$buffer_km == i )
       )
       ########################################
       ### Sun And Abraham
       
-      MODEL_SA = feols( reading_c_sd ~ sunab(year_treated_sa, year)    ## The only thing that's changed
+      MODEL_SA = feols( reading_c_sd ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1) )    ## The only thing that's changed
                         | id_name + year,                           ## FEs
-                        cluster = ~ id_name + DIVIPOLA_MUN,                          ## Clustered SEs
+                        cluster = ~ id_name ,                          ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
       ######################################## 
       name_in_enviroment = paste0("Score at ", i, " Meters")
@@ -190,13 +192,13 @@ if(2==2){
       ####### Modelos
       MODEL = feols(finished_uni ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                     | id_name + year,                                 ## FEs
-                    cluster = ~id_name + DIVIPOLA_MUN,                          ## Clustered SEs
+                    cluster = ~ id_name ,                        ## Clustered SEs
                     data = subset(df, df$buffer_km == i 
                     ) )
       
-      MODEL_SA = feols(finished_uni ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
+      MODEL_SA = feols(finished_uni ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1)  ) #+ ## The only thing that's changed
                        | id_name + year,                                 ## FEs
-                       cluster = ~ id_name + DIVIPOLA_MUN,                       ## Clustered SEs
+                       cluster = ~ id_name ,                       ## Clustered SEs
                        data = subset(df, df$buffer_km == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -241,13 +243,13 @@ if(2==2){
       ####### Modelos
       MODEL = feols( (frac_trabaja_sd) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      |id_name + year,                                 ## FEs
-                     cluster = ~ id_name + DIVIPOLA_MUN,                               ## Clustered SEs
+                     cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (frac_trabaja_sd) ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
+      MODEL_SA = feols( (frac_trabaja_sd) ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                                ## FEs
-                        cluster = ~id_name + DIVIPOLA_MUN,                       ## Clustered SEs
+                        cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -299,13 +301,13 @@ if(3==3){
       ####### Modelos
       MODEL = feols( (TOTPROF_100kPROF_COL) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      | id_name + year,                                ## FEs
-                     cluster = ~ id_name + DIVIPOLA_MUN,                               ## Clustered SEs
+                     cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (TOTPROF_100kPROF_COL) ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
+      MODEL_SA = feols( (TOTPROF_100kPROF_COL) ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                              ## FEs
-                        cluster = ~id_name + DIVIPOLA_MUN,                       ## Clustered SEs
+                        cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
@@ -355,13 +357,13 @@ if(3==3){
       ####### Modelos
       MODEL = feols( (TOTPRE_100kPROF_COL) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      | id_name + year,                               ## FEs
-                     cluster = ~ id_name + DIVIPOLA_MUN,                               ## Clustered SEs
+                     cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (TOTPRE_100kPROF_COL) ~ sunab(year_treated_sa, year) #+ ## The only thing that's changed
+      MODEL_SA = feols( (TOTPRE_100kPROF_COL) ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                            ## FEs
-                        cluster = ~id_name + DIVIPOLA_MUN,                       ## Clustered SEs
+                        cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")

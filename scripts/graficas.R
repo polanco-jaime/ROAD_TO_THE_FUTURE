@@ -1,6 +1,6 @@
 inrange <- function(tabla, periodo){
   tabla =subset(tabla, tabla[[periodo]] >= -5 )
-  tabla =subset(tabla, tabla[[periodo]] <= 8 )
+  tabla =subset(tabla, tabla[[periodo]] <= 10 )
 }
 #################################################################
 
@@ -14,10 +14,10 @@ CS_Math_base_10p = Callaway_table(buffer = 1000,   tabla= base_10p ,  anticipati
 Math_TWFE_10p = TWFE_table(estimator = 'TWFE', MODELO = TWFE_Math_base_10p[["Score at 1000 Meters"]])
 Math_SA_10p = SA_table( SA_Math_base_10p[["Score at 1000 Meters"]])
 
-event_study_plot(  Math_SA_10p , seperate = F, )
-
+ 
 ## Union de los estimadores
 Math_10p = inrange( do.call("rbind", list(Math_TWFE_10p, Math_SA_10p, CS_Math_base_10p)) ,   periodo= 'term')
+event_study_plot(  Math_10p , seperate = F, )
 
 ## Exportar imagen de todos los estimadores
 png(paste0("graph/Math_10p_1000m",".png"),  width = 1030, height = 598)

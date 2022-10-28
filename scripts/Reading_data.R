@@ -4,7 +4,7 @@
 #setwd("C:/Users/USER/Desktop/DID roads/")
 # Downloading tabless
 global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
-#shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
+# shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
 
 
 
@@ -31,7 +31,32 @@ temp = list.files("./",pattern="*.parquet")
  
 list2env(
   lapply(setNames(temp, make.names(gsub("*.parquet$", "", temp))), 
-         arrow::read_parquet), envir = .GlobalEnv)
+         arrow::read_parquet), envir = .GlobalEnv  )
+
+## Biased ATT
+
+
+tabla = base_ic %>% subset( .$buffer_km == 1000 )
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
+
+tabla = base_ai %>% subset( .$buffer_km == 1000 )
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
+
+tabla = base_10p %>% subset( .$buffer_km == 1000 )
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
+
+tabla = base_50p %>% subset( .$buffer_km == 1000 )
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
+
+
+tabla = base_ent %>% subset( .$buffer_km == 1000 )
+ATT_biased(base = tabla , Y = 'reading_c_sd', 
+           treat= 'treat_' , period_var = 'year')
+
 
 # base_ols <- read_csv("base_ols.csv")
 # colnames(base_ols)
