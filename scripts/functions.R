@@ -674,38 +674,3 @@ Descriptive_statistics <- function(base, heterogenidad, unidades_de_info,tratami
 
 
 
-
-
-
-#summary(lm(data = base_10p, math_c~ treat))
-#summary(lm(data = base_10p, finished_uni~ treat))
-#summary(lm(data = base_10p, frac_trabaja~ treat))
-#summary(lm(data = base_10p, finished_uni~ treat))
-
-#png(paste0("Data/graph/histo_read_math.png"),  width = 1030, height = 598)
-
-#par(mfrow = c(1, 2))
-#dato1 = subset(base_10p, base_10p$buffer_km == 1000 )[[1]]
-#dato2 = subset(base_10p, base_10p$buffer_km == 1000 )[[2]]
-
-#hist(dato1, breaks = 10, main = "Math", ylab = "Frecuency", xlab = "Mathematic test", density = T)
-#lines(density(base_10p$math_c), lwd = 50, col = 'red')
-#hist(dato2, breaks = 10, main = "Reading literacy", ylab = "Frecuency", xlab = "Reading literacy test" , density = T)
-#lines(density(base_10p$reading_c), lwd = 50, col = 'red')
-
-#par(mfrow = c(1, 1))
-#dev.off()
-#getwd()
-
-#lista = c('math_c', 'reading_c', 'frac_trabaja', 'finished_uni')
-
-
-#tabla = Descriptive_statistics(base = base_10p,
-#                               heterogenidad ='buffer_km' ,
-#                               unidades_de_info ='id_name' ,
-#                               tratamiento = 'treat', 
-#                               lista = lista)
-
-#write.csv2(tabla, "Descriptive_statistics.csv", row.names = F)
-#getwd()
-#SA_Participate_saberpro_base_ic[["Score at 1000 Meters"]]

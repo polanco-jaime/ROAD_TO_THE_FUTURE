@@ -21,7 +21,7 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
  
- 
+devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R")  
 gc()
 ########################## loading full data ################################## 
 
