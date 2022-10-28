@@ -574,9 +574,7 @@ Gardner_table   = function( yname, df ) {
   return(MODELO)
 }
 
-base = base_10p
-
-colnames(base)['math_c']
+ 
 ATT_biased  <- function(base, Y, treat, period_var ){
   ### dependent
   var = Y
