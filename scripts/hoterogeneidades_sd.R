@@ -1,7 +1,7 @@
 naturaleza = c("PUBL", "PRIV" , "") # unique(base_10p$cole_naturaleza)
 reference_time = -1
 
-tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
+tablas = c( 'base_ai','base_10p','base_50p', 'base_ic', 'base_ent')
 ############### Naturaleza
 
 
@@ -49,6 +49,9 @@ if (1==1){
       if (j == 'base_10p') {
         TWFE_reading_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_reading_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_reading_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_reading_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_reading_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_reading_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -108,6 +111,9 @@ if (1==1){
       if (j == 'base_10p') {
         TWFE_math_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_math_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_math_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_math_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_math_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_math_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -166,6 +172,9 @@ if (1==1){
       } else if (j == 'base_ic') {
         TWFE_profes_preg_nat_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_profes_preg_nat_base_ic[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_profes_preg_nat_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_profes_preg_nat_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ent') {
         TWFE_profes_preg_nat_base_ent[[name_in_enviroment]] <- (MODEL)  
         SA_profes_preg_nat_base_ent[[name_in_enviroment]] <- (MODEL_SA)
@@ -181,7 +190,7 @@ if (1==1){
   
   
   
-  tablas = c( 'base_ai','base_10p', 'base_ic')
+  tablas = c( 'base_ai','base_10p', 'base_50p', 'base_ic')
   for (j in tablas) {
     print(j)
     tabla = j
@@ -220,6 +229,9 @@ if (1==1){
       if (j == 'base_10p') {
         TWFE_labor_force_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_labor_force_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_labor_force_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_labor_force_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_labor_force_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_labor_force_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -240,7 +252,7 @@ if (1==1){
   
 }
 
-tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
+tablas = c( 'base_ai','base_10p', 'base_50p', 'base_ic', 'base_ent')
 
 for (j in tablas) {
   print(j)
@@ -283,6 +295,9 @@ for (j in tablas) {
     if (j == 'base_10p') {
       TWFE_labor_force_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL) 
       SA_labor_force_naturaleza_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+    } else if (j == 'base_50p') {
+      TWFE_labor_force_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL)
+      SA_labor_force_naturaleza_base_50p[[name_in_enviroment]] <- (MODEL_SA)
     } else if (j == 'base_ic') {
       TWFE_labor_force_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL)
       SA_labor_force_naturaleza_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -301,7 +316,7 @@ for (j in tablas) {
 }
 
 ###########################################
-time_treat = c('10p','ai','ent', 'ic')
+time_treat = c('50p','10p','ai','ent', 'ic')
 pch_ = c(16,17 ,15, 1,2, 0,20)
 
 
@@ -313,11 +328,12 @@ for (i in time_treat){
   etable(  lista_modelo )
   
   png(paste0("graph/", "SA_reading_score_by_nature_",i,".png"),  width = 1030, height = 598)
-  event_study_plot(results_by_buffer(lista_modelo), seperate = F, TITULO= 'Sun and Abraham (2020):\n Heterogeneities in reading literacy scores ' ) 
- 
-  dev.off()
+  event_study_plot(results_by_buffer(lista_modelo), seperate = F, 
+                   TITULO= 'Sun and Abraham (2020):\n Heterogeneities in reading literacy scores ' ) 
+ dev.off()
   
 } 
+
 ###########################################
 
 for (i in time_treat){
@@ -363,29 +379,43 @@ event_study_plot(results_by_buffer(SA_labor_force_base_10p),
 
 ##################################
 #human capital acum
-png(paste0("graph/", "SA_reading_score_by_labor_force_10p.png"),  width = 1030, height = 598)
+png(paste0("graph/", "SA_estu_trabaja_base_10p.png"),  width = 1030, height = 598)
 event_study_plot(results_by_buffer(SA_estu_trabaja_base_10p), 
                  seperate = T, 
                  TITULO= 'Sun and Abraham (2020):\n Labor force participation ' ) 
 
 dev.off()
 
+png(paste0("graph/", "SA_estu_trabaja_base_50p.png"),  width = 1030, height = 598)
+event_study_plot(results_by_buffer(SA_estu_trabaja_base_50p), 
+                 seperate = T, 
+                 TITULO= 'Sun and Abraham (2020):\n Labor force participation ' ) 
 
+dev.off()
+
+
+png(paste0("graph/", "SA_estu_trabaja_base_ai.png"),  width = 1030, height = 598)
 event_study_plot(results_by_buffer(SA_estu_trabaja_base_ai), 
                  seperate = T, 
                  TITULO= 'Sun and Abraham (2020):\n Labor force participation ' ) 
+dev.off()
 
+###################
+
+png(paste0("graph/", "SA_estu_trabaja_base_ic.png"),  width = 1030, height = 598)
 event_study_plot(results_by_buffer(SA_estu_trabaja_base_ic), 
                  seperate = T, 
                  TITULO= 'Sun and Abraham (2020):\n Labor force participation ' ) 
+dev.off()
 
+png(paste0("graph/", "SA_estu_trabaja_base_ent.png"),  width = 1030, height = 598)
 event_study_plot(results_by_buffer(SA_estu_trabaja_base_ent), 
                  seperate = T, 
                  TITULO= 'Sun and Abraham (2020):\n Labor force participation ' ) 
 
+dev.off()
 
-
-#########################################
+###########################################################################################################################
 # LABOR FORCE PARTICIPATION
 ####
 base_10p$frac_trabaja_sd

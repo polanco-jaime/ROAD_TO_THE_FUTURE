@@ -37,7 +37,7 @@ if(1==1){
   kilometros = c(1000  ,1500,2000,2500,3000,3500,4000,4500)
   reference_time = -1
   
-  tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
+  tablas = c( 'base_ai','base_10p', 'base_50p', 'base_ic', 'base_ent')
   
   for (j in tablas) {
     print(j)
@@ -76,6 +76,9 @@ if(1==1){
       if (j == 'base_10p') {
         TWFE_Math_base_10p[[name_in_enviroment]] <- (MODEL)
         SA_Math_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_Math_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_Math_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_Math_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_Math_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -131,6 +134,9 @@ if(1==1){
       if (j == 'base_10p') {
         TWFE_Reading_base_10p[[name_in_enviroment]] <- (MODEL)
         SA_Reading_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_Reading_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_Reading_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_Reading_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_Reading_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -157,12 +163,14 @@ fixest::iplot(
   list(SA_Math_base_ent[["Score at 1000 Meters"]],
        SA_Math_base_ai[["Score at 1000 Meters"]],
        SA_Math_base_10p[["Score at 1000 Meters"]],
+       SA_Math_base_50p[["Score at 1000 Meters"]],
        SA_Math_base_ic[["Score at 1000 Meters"]])
 )
 fixest::iplot( 
   list(SA_Reading_base_10p[["Score at 1000 Meters"]],
        SA_Reading_base_ai[["Score at 1000 Meters"]],
        SA_Reading_base_10p[["Score at 1000 Meters"]],
+       SA_Reading_base_50p[["Score at 1000 Meters"]],
        SA_Reading_base_ic[["Score at 1000 Meters"]]) 
 )
 
@@ -171,7 +179,7 @@ if(2==2){
   kilometros = c(1000,1500,2000,2500,3000,3500,4000,4500)
   reference_time = -1
   
-  tablas = c( 'base_ai','base_10p', 'base_ic')
+  tablas = c( 'base_ai','base_10p','base_50p', 'base_ic')
   
   
   for (j in tablas) {
@@ -209,7 +217,10 @@ if(2==2){
       if (j == 'base_10p') {
         TWFE_Participate_saberpro_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_Participate_saberpro_base_10p[[name_in_enviroment]] <- (MODEL_SA)
-      } else if (j == 'base_ic') {
+      } else if (j == 'base_50p') {
+        TWFE_Participate_saberpro_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_Participate_saberpro_base_50p[[name_in_enviroment]] <- (MODEL_SA)
+      }  else if (j == 'base_ic') {
         TWFE_Participate_saberpro_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_Participate_saberpro_base_ic[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ent') {
@@ -226,7 +237,7 @@ if(2==2){
     
   }
  
-  tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
+  tablas = c( 'base_ai','base_10p', 'base_50p', 'base_ic', 'base_ent')
   for (j in tablas) {
     print(j)
     tabla = j
@@ -260,6 +271,9 @@ if(2==2){
       if (j == 'base_10p') {
         TWFE_estu_trabaja_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_estu_trabaja_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_estu_trabaja_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_estu_trabaja_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_estu_trabaja_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_estu_trabaja_base_ic[[name_in_enviroment]] <- (MODEL_SA)
@@ -282,7 +296,7 @@ if(2==2){
 
 if(3==3){
   
-  tablas = c( 'base_ai','base_10p', 'base_ic', 'base_ent')
+  tablas = c( 'base_ai','base_10p','base_50p', 'base_ic', 'base_ent')
   for (j in tablas) {
     print(j)
     tabla = j
@@ -296,7 +310,7 @@ if(3==3){
     for (i in kilometros) {
       print(Sun_Abraham_Modelos)
       df = get(tabla)
-      df <- subset(df, df$year>= 2012)
+      # df <- subset(df, df$year>= 2012)
       tryCatch( {
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
@@ -318,7 +332,10 @@ if(3==3){
       if (j == 'base_10p') {
         TWFE_total_profes_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_total_profes_base_10p[[name_in_enviroment]] <- (MODEL_SA)
-      } else if (j == 'base_ic') {
+      } else if (j == 'base_50p') {
+        TWFE_total_profes_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_total_profes_base_50p[[name_in_enviroment]] <- (MODEL_SA)
+      }  else if (j == 'base_ic') {
         TWFE_total_profes_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_total_profes_base_ic[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ent') {
@@ -352,7 +369,7 @@ if(3==3){
     for (i in kilometros) {
       print(Sun_Abraham_Modelos)
       df = get(tabla)
-      df <- subset(df, df$year>= 2012)
+      # df <- subset(df, df$year>= 2012)
       tryCatch( {
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
@@ -374,6 +391,9 @@ if(3==3){
       if (j == 'base_10p') {
         TWFE_total_profes_preg_base_10p[[name_in_enviroment]] <- (MODEL) 
         SA_total_profes_preg_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+      } else if (j == 'base_50p') {
+        TWFE_total_profes_preg_base_50p[[name_in_enviroment]] <- (MODEL)
+        SA_total_profes_preg_base_50p[[name_in_enviroment]] <- (MODEL_SA)
       } else if (j == 'base_ic') {
         TWFE_total_profes_preg_base_ic[[name_in_enviroment]] <- (MODEL)
         SA_total_profes_preg_base_ic[[name_in_enviroment]] <- (MODEL_SA)

@@ -11,7 +11,7 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
 
-###########basura#############
+###################################
 #picture buffers
 
 pvaluebuffer <- function(model_list, titulo,subject, reference_time){
@@ -79,8 +79,7 @@ pvaluebuffer <- function(model_list, titulo,subject, reference_time){
   
 }
 
-#save with dpi 200
-
+###################################
 
 coeficients_se <- function (model_list){
   summaries_ =  data.frame()
@@ -108,8 +107,8 @@ coeficients_se <- function (model_list){
     
   }
 }
-#########################
 
+###################################
 
 safe_results_did <- function (Result, academic_subject ,distancia,interaction ="TWFE"){
   pch_ = c(16,17 ,15, 1,2, 0,20)
@@ -161,7 +160,7 @@ safe_results_did <- function (Result, academic_subject ,distancia,interaction ="
   
 }
 
-##########################
+###################################
  
   
 drop_character_graph_tab = function(tabla){
@@ -175,6 +174,8 @@ drop_character_graph_tab = function(tabla){
   
   return(tabla)
 }
+
+###################################
 
 drop_character = function(tabla){
   as = row.names(tabla)

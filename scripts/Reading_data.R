@@ -20,8 +20,10 @@ for (i in 1:length(lista) ) {
   }
   lapply(lista[i], library, character.only = TRUE)
 }
- 
-devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R")  
+
+# source("C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/scripts/functions.R", echo=TRUE) 
+source(paste0(global_path ,'scripts/functions.R'))
+# devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R")  
 gc()
 ########################## loading full data ################################## 
 
@@ -34,6 +36,7 @@ list2env(
          arrow::read_parquet), envir = .GlobalEnv  )
 
 ## Biased ATT
+
 
 
 tabla = base_ic %>% subset( .$buffer_km == 1000 )
@@ -68,5 +71,4 @@ rm(lista)
 rm(i)
 ###############3
 #save.image("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
-source(paste0(global_path ,'scripts/functions.R'))
 warning("the data of project had been read")
