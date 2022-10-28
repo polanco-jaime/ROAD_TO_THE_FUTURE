@@ -4,6 +4,8 @@
 options(scipen=111)
 global_path = "C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/"
 source(paste0(global_path ,'scripts/Reading_data.R'))
+devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R") 
+
 ############# Section 1 ############################
 #### TWFE ####
 ###  TWFE for Math

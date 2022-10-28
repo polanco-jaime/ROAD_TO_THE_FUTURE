@@ -617,8 +617,7 @@ ATT_biased  <- function(base, Y, treat, period_var ){
     return( appended_ )
 }
 
-ATT_biased(base = tabla , Y = 'reading_c_sd', 
-           treat= 'treat_' , period_var = 'year')
+
 
 Descriptive_statistics <- function(base, heterogenidad, unidades_de_info,tratamiento, lista ) {
   library(tidyr)
