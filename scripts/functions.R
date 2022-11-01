@@ -396,6 +396,27 @@ table_result_TWFE_SA_C = function(Buffer, TWFE_result, SA_result, ATT_result){
 #############################################################
 #########################################
 
+theme_w_did <- function (base_size = 16, base_family = "", base_line_size = base_size/22, 
+          base_rect_size = base_size/22) {
+  half_line <- base_size/2
+  theme_grey(base_size = base_size, base_family = base_family, 
+             base_line_size = base_line_size, base_rect_size = base_rect_size) %+replace% 
+    theme(panel.background = element_rect(fill = "white", 
+                                          colour = NA), panel.border = element_rect(fill = NA, 
+                                                                                    colour = "white", size = rel(1)), panel.grid = element_line(colour = "grey87"), 
+          panel.grid.major = element_line(size = rel(0.5)), 
+          panel.grid.minor = element_line(size = rel(0.25)), 
+          axis.ticks = element_line(colour = "grey70", size = rel(0.5)), 
+          legend.key = element_rect(fill = "white", colour = NA), 
+          strip.background = element_rect(fill = "white", 
+                                          colour = NA), strip.text = element_text(colour = "steelblue4", 
+                                                                                  size = rel(0.8), margin = margin(0.8 * half_line, 
+                                                                                                                   0.8 * half_line, 0.8 * half_line, 0.8 * half_line)), 
+          complete = TRUE)
+}
+
+
+#########################################
 
 event_study_plot = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
   library(ggplot2)
@@ -407,17 +428,24 @@ event_study_plot = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
     axis.title = element_text(family = "Helvetica", face = "bold", size = (12), colour = "steelblue4"),
     axis.text = element_text(family = "Courier", face = "bold", colour = "cornflowerblue", size = (12)),
     legend.position = "bottom"
-  )
+    # ,panel.background = element_rect(fill = "white", colour = NA),
+    # panel.border     = element_rect(fill = NA, colour = "grey70" ), #, linewidth = 0.5 
+    # panel.grid = element_line(color = "#808080", size = 0.05 ),
+    # panel.grid.major = element_line(linewidth = rel(0.05) ),
+    # panel.grid.minor = element_line(linewidth = rel(0.05) )
+                                  )
   estimators = unique(out$estimator)
   levels = c("TWFE", "Borusyak, Jaravel, Spiess (2021)", "Callaway and Sant'Anna (2020)", 
              "Gardner (2021)", "Roth and Sant'Anna (2021)", "Sun and Abraham (2020)",
              "Score at 1000 Meters" ,"Score at 1500 Meters" ,"Score at 2000 Meters",
              "Score at 2500 Meters" ,"Score at 3000 Meters" ,"Score at 3500 Meters",
              "Score at 4000 Meters" ,"Score at 4500 Meters", 'Private schools' , 
-             'Public schools' ,  'All sample schools'
+             'Public schools' ,  'All sample schools' 
              )
+  
   levels = levels[levels %in% estimators]
   out$estimator = factor(out$estimator, levels = levels)
+  
   color_scale = c(TWFE = "#374E55", `Gardner (2021)` = "#DF8F44", 
                   `Callaway and Sant'Anna (2020)` = "#00A1D5", `Sun and Abraham (2020)` = "#B24745",
                   `Roth and Sant'Anna (2021)` = "#79AF97", `Borusyak, Jaravel, Spiess (2021)` = "#6A6599",
@@ -425,8 +453,7 @@ event_study_plot = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
                   `Score at 2500 Meters`= "#B24745" , `Score at 3000 Meters` = "#79AF97",`Score at 3500 Meters` = "#6A6599",
                   `Score at 4000 Meters` = '#ED8975' , `Score at 4500 Meters` = '#EAAC8B' , 
                   `Private schools` = "#374E55", `Public schools` = "#DF8F44", 
-                  `All sample schools` = "#00A1D5"
-                  )
+                  `All sample schools` = "#00A1D5"   )
   
   color_scale = color_scale[names(color_scale) %in% estimators]
   out$ci_lower = out$estimate - 1.96 * out$std.error
@@ -436,36 +463,39 @@ event_study_plot = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
   else position = ggplot2::position_dodge(width = 0.5)
   if (!is.null(horizon)) {
     out = out[out$term >= horizon[1] & out$term <= horizon[2], 
-    ]
-  }
+    ] 
+    }
   y_lims = c(min(out$ci_lower), max(out$ci_upper)) * 1.05
-  x_lims = c(min(out$term) - 1, max(out$term) + 1)
+  x_lims = c(min(out$term) - 0.5, max(out$term) + 0.5)
   Plot = ggplot2::ggplot(data = out, ggplot2::aes(x = .data$term, 
-                                           y = .data$estimate, color = .data$estimator,
-                                           ymin = .data$ci_lower, 
-                                           ymax = .data$ci_upper)) + {
-                                             if (seperate) 
-                                               ggplot2::facet_wrap(~estimator, scales = "free")
-                                           } +
-    ggplot2::geom_point(position = position) + 
+                                                  y = .data$estimate, color = .data$estimator,
+                                                  ymin = .data$ci_lower , 
+                                                  ymax = .data$ci_upper)) + {
+                                                    if (seperate) 
+                                                      ggplot2::facet_wrap(~estimator, scales = "free")
+                                                  } +  theme_light()  +
+    ggplot2::geom_point(position = position, size = 1.8) + 
     ggplot2::geom_errorbar(position = position) + 
     ggplot2::geom_vline(xintercept = -1, linetype = "dashed") + 
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + 
-    ggplot2::ggtitle(TITULO)+ 
-    # ggplot2::geom_tile(colour="white", size=0.25) +
+    ggplot2::ggtitle(TITULO)+ ggplot2::scale_x_continuous(limits = x_lims, breaks = c(  (min(out$term)  ) :  (max(out$term)   ) ) ) +
+    # ggplot2::geom_tile(colour="white" ) +
     ggplot2::theme(  plot.title = element_text(hjust = 0.5, vjust = 0.5),
-            axis.line.x = element_line(color="steelblue4", size = 0.5),
-            axis.line.y = element_line(color="steelblue4", size = 0.5)) +
+                     axis.line.x = element_line(color="steelblue4", size = 0.5),
+                     axis.line.y = element_line(color="steelblue4", size = 0.5)) +
+    
     ggplot2::labs(y = "Point Estimate and 95% Confidence Interval", 
                   x = "Event Time", color = "Estimator") + {
                     if (seperate) 
                       ggplot2::scale_y_continuous(limits = y_lims)
                   } + {
                     if (seperate) 
-                      ggplot2::scale_x_continuous(limits = x_lims)
-                  } + ggplot2::theme_minimal(base_size = 16) + ggplot2::scale_color_manual(values = color_scale) 
-  print(Plot +mynamestheme  )
-  }
+                      ggplot2::scale_x_continuous(limits = x_lims, breaks =  c(  (min(out$term)  ) :  (max(out$term)   ) ) )
+                  }  + ggplot2::scale_color_manual(values = color_scale) 
+  P =  Plot +
+    theme_w_did( )     + mynamestheme  
+  print(P  )
+}
 
 
 
@@ -516,7 +546,7 @@ Callaway_table = function(buffer,  tabla, anticipation,  yname ){
                      'std.error'  =  st_error
   ) 
   body_ = subset(body_, body_$term <= 8 )
-  body_ = subset(body_, body_$term >= -8 )
+  body_ = subset(body_, body_$term >= -10 )
   
   return(body_)
 }
@@ -548,7 +578,7 @@ SA_table = function( MODELO ) {
   a$estimate = as.numeric(a$estimate)
   a$std.error = as.numeric(a$std.error)
   a = a[,c('estimator','term','estimate','std.error')]
-  a = subset(a, a$term <= 8 )
+  a = subset(a, a$term <= 10 )
   a = subset(a, a$term >= -8 )
   return(a)
 }
@@ -686,4 +716,56 @@ Descriptive_statistics <- function(base, heterogenidad, unidades_de_info,tratami
 }
 
 
+ATT_SA<- function(tabla, buffer, Y_var, heterogenities =F){
+  df = get(tabla)
+  if (heterogenities ==F) {
+    df = subset(df,df$buffer_km==buffer  )
+    df$Y = df[[Y_var]] 
+    resumen = data.frame( summary(
+      feols( Y ~  sunab(year_treated_sa, year , att = T, bin.rel = "bin::2") #+ ## The only thing that's changed
+             | id_name + year,                               ## FEs
+             cluster = ~ id_name   ,                        ## Clustered SEs
+             data = df )
+      , agg = "ATT")[["coeftable"]])
+    
+    resumen$significancia =significancia_un_valor(coeficiente = resumen[[1]], standar_error= resumen[[2]])
+    resumen$agg = row.names(resumen)
+    row.names(resumen) <- NULL   
+    resumen$Y_var = Y_var
+    resumen$table = tabla
+    resumen$heterogenities = heterogenities
+    colnames(resumen) = c("Estimate"  , "Std_Error", "t_value",    "P_Value" ,'significancia'  , "agg" , "Y_var" ,"table" , 'heterogenities'    )
+  }else{
+    df = subset(df,df$buffer_km==buffer  )
+    hetero = unique(df[[heterogenities ]])
+    resumen_hetero = data.frame()
+    for (i in hetero) {
+      df$Y = df[[Y_var]] 
+      resumen = data.frame( summary(
+        feols( Y ~  sunab(year_treated_sa, year , att = T, bin.rel = "bin::2") #+ ## The only thing that's changed
+               | id_name + year,                               ## FEs
+               cluster = ~ id_name   ,                        ## Clustered SEs
+               data = subset(df, df[[heterogenities ]] == i )
+               )
+        , agg = "ATT")[["coeftable"]])
+      
+      resumen$significancia =significancia_un_valor(coeficiente = resumen[[1]], standar_error= resumen[[2]])
+      resumen$agg = row.names(resumen)
+      row.names(resumen) <- NULL   
+      resumen$Y_var = Y_var
+      resumen$table = tabla
+      resumen$heterogenities = i
+      colnames(resumen) = c("Estimate"  , "Std_Error", "t_value",    "P_Value" ,'significancia'  , "agg" , "Y_var" ,"table" , 'heterogenities'    )
+      
+      resumen_hetero = rbind(resumen, resumen_hetero)
+    }
+    
+    resumen = resumen_hetero
+
+  }
+
+  
+  
+  return(resumen)
+}
 

@@ -57,7 +57,7 @@ if(1==1){
       MODEL = feols( math_c_sd ~ i(time_to_treat, treat_, ref = reference_time)    ## Our key interaction: time × treatment status
                      | id_name + year   ,                             ## FEs
                      cluster = ~ id_name ,                              ## Clustered SEs
-                     data = subset(df, df$buffer_km == i )
+                     data = subset(df, df$buffer_km == i ) 
       )
       
       ########################################
@@ -68,7 +68,19 @@ if(1==1){
                         | id_name + year ,                             ## FEs
                         cluster = ~ id_name ,                         ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
-      summary(MODEL_SA)
+      ###print SA######################
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+      #################################
+      
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+     
+      
       ######################################## 
       name_in_enviroment = paste0("Score at ", i, " Meters")
       #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
@@ -127,6 +139,11 @@ if(1==1){
                         | id_name + year,                           ## FEs
                         cluster = ~ id_name ,                          ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
+      ###print SA
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
       ######################################## 
       name_in_enviroment = paste0("Score at ", i, " Meters")
       #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
@@ -210,7 +227,12 @@ if(2==2){
                        | id_name + year,                                 ## FEs
                        cluster = ~ id_name ,                       ## Clustered SEs
                        data = subset(df, df$buffer_km == i ) )
-      
+      ###print SA######################
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+      #################################
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
       
       #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
@@ -254,16 +276,22 @@ if(2==2){
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
-      MODEL = feols( (frac_trabaja_sd) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
+      MODEL = feols( frac_trabaja_sd ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      |id_name + year,                                 ## FEs
                      cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (frac_trabaja_sd) ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
+      MODEL_SA = feols( frac_trabaja_sd ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                                ## FEs
                         cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
+      ###print SA######################
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+      #################################
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
       
@@ -315,16 +343,23 @@ if(3==3){
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
-      MODEL = feols( (TOTPROF_100kPROF_COL) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
+      MODEL = feols( TOTPROF_100kPROF_COL ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      | id_name + year,                                ## FEs
                      cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (TOTPROF_100kPROF_COL) ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
+      MODEL_SA = feols( TOTPROF_100kPROF_COL ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                              ## FEs
                         cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
+      
+      ###print SA######################
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+      #################################
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
       
@@ -374,16 +409,22 @@ if(3==3){
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
-      MODEL = feols( (TOTPRE_100kPROF_COL) ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
+      MODEL = feols( TOTPRE_100kPROF_COL ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
                      | id_name + year,                               ## FEs
                      cluster = ~ id_name ,                               ## Clustered SEs
                      data = subset(df, df$buffer_km == i 
                      ) )
       
-      MODEL_SA = feols( (TOTPRE_100kPROF_COL) ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
+      MODEL_SA = feols( TOTPRE_100kPROF_COL ~ sunab(year_treated_sa, year , ref.p = c(.F + -2:2, -1) ) #+ ## The only thing that's changed
                         | id_name + year,                            ## FEs
                         cluster = ~ id_name ,                     ## Clustered SEs
                         data = subset(df, df$buffer_km == i ) )
+      ###print SA######################
+      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+      event_study_plot( SA_table( MODEL_SA  )   )
+      dev.off() 
+      #################################
       
       name_in_enviroment = paste0(  "Score at ", i, " Meters")
       
