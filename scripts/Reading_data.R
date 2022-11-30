@@ -3,12 +3,12 @@
 #https://lost-stats.github.io/Model_Estimation/Research_Design/two_by_two_difference_in_difference.html
 #setwd("C:/Users/USER/Desktop/DID roads/")
 # Downloading tabless
-global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
+global_path = 'C:/Users/USER/Desktop/DID roads/'
 # shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
 # mainDir <- 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/Data'
 # subDir <- "graph"
-
-dir.create(file.path(mainDir, subDir))
+global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
+#dir.create(file.path(mainDir, subDir))
 
 #load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
 lista = c('readr','readxl','sqldf','plyr', 
@@ -74,3 +74,9 @@ rm(i)
 ###############3
 #save.image("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
 warning("the data of project had been read")
+table(base_10p$buffer_km)
+base_10p$buffer_km = ifelse(base_10p$buffer_km<=2000,2000,base_10p$buffer_km)
+base_50p$buffer_km =  ifelse(base_50p$buffer_km<=2000,2000,base_50p$buffer_km)
+base_ai$buffer_km = ifelse(base_ai$buffer_km<=2000,2000,base_ai$buffer_km)
+base_ent$buffer_km =  ifelse(base_ent$buffer_km<=2000,2000,base_ent$buffer_km)
+base_ic$buffer_km = ifelse(base_ic$buffer_km<=2000,2000,base_ic$buffer_km)

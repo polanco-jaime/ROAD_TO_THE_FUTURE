@@ -34,7 +34,7 @@ if (1==1){
 #### TWFE ####
 #################################################
 if(1==1){
-  kilometros = c(1000  ,1500,2000,2500,3000,3500,4000,4500)
+  kilometros = c(2000,2500,3000,3500,4000,4500) #1000  ,1500,
   reference_time = -1
   
   tablas = c( 'base_ai','base_10p', 'base_50p', 'base_ic', 'base_ent')
@@ -49,60 +49,64 @@ if(1==1){
     assign( Sun_Abraham_Modelos, list(), envir = .GlobalEnv)
     
     for (i in kilometros) {
-      print( sprintf(" The model for the treatment time related with:  %s, for the distance: %s is running" , j , i) )
-      df = get(tabla)
-      
-      ######################################## 
-      ### TWFE
-      MODEL = feols( math_c_sd ~ i(time_to_treat, treat_, ref = reference_time)    ## Our key interaction: time × treatment status
-                     | id_name + year   ,                             ## FEs
-                     cluster = ~ id_name ,                              ## Clustered SEs
-                     data = subset(df, df$buffer_km == i ) 
+      tryCatch( {
+        print( sprintf(" The model for the treatment time related with:  %s, for the distance: %s is running" , j , i) )
+        df = get(tabla)
+        
+        ######################################## 
+        ### TWFE
+        MODEL = feols( math_c_sd ~ i(time_to_treat, treat_, ref = reference_time)    ## Our key interaction: time × treatment status
+                       | id_name + year   ,                             ## FEs
+                       cluster = ~ id_name ,                              ## Clustered SEs
+                       data = subset(df, df$buffer_km == i ) 
+        )
+        
+        ########################################
+        ### Sun And Abraham
+        table(df$DIVIPOLA_MUN)
+        
+        MODEL_SA = feols( math_c_sd ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1)   )    ## The only thing that's changed
+                          | id_name + year ,                             ## FEs
+                          cluster = ~ id_name ,                         ## Clustered SEs
+                          data = subset(df, df$buffer_km == i ) )
+        ###print SA######################
+        est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+        png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+        event_study_plot( SA_table( MODEL_SA  )   )
+        dev.off() 
+        #################################
+        
+        est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
+        png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
+        event_study_plot( SA_table( MODEL_SA  )   )
+        dev.off() 
+        
+        
+        ######################################## 
+        name_in_enviroment = paste0("Score at ", i, " Meters")
+        #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
+        
+        if (j == 'base_10p') {
+          TWFE_Math_base_10p[[name_in_enviroment]] <- (MODEL)
+          SA_Math_base_10p[[name_in_enviroment]] <- (MODEL_SA)
+        } else if (j == 'base_50p') {
+          TWFE_Math_base_50p[[name_in_enviroment]] <- (MODEL)
+          SA_Math_base_50p[[name_in_enviroment]] <- (MODEL_SA)
+        } else if (j == 'base_ic') {
+          TWFE_Math_base_ic[[name_in_enviroment]] <- (MODEL)
+          SA_Math_base_ic[[name_in_enviroment]] <- (MODEL_SA)
+        } else if (j == 'base_ent') {
+          TWFE_Math_base_ent[[name_in_enviroment]] <- (MODEL)
+          SA_Math_base_ent[[name_in_enviroment]] <- (MODEL_SA)
+        }  else if (j == 'base_ai') {
+          TWFE_Math_base_ai[[name_in_enviroment]] <- (MODEL)
+          SA_Math_base_ai[[name_in_enviroment]] <- (MODEL_SA)
+        } else {
+          message('no esta en las tabkas')
+        }
+      }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
       )
-      
-      ########################################
-      ### Sun And Abraham
-      table(df$DIVIPOLA_MUN)
-      
-      MODEL_SA = feols( math_c_sd ~ sunab(year_treated_sa, year, ref.p = c(.F + -2:2, -1)   )    ## The only thing that's changed
-                        | id_name + year ,                             ## FEs
-                        cluster = ~ id_name ,                         ## Clustered SEs
-                        data = subset(df, df$buffer_km == i ) )
-      ###print SA######################
-      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
-      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
-      event_study_plot( SA_table( MODEL_SA  )   )
-      dev.off() 
-      #################################
-      
-      est =   paste0('SA_',  summary(MODEL_SA)[["call"]][["fml"]][[2]]  , "_Score at ", i, " Meters")
-      png(paste0("graph/",tabla,'_',est,".png"),  width = 1030, height = 598)
-      event_study_plot( SA_table( MODEL_SA  )   )
-      dev.off() 
      
-      
-      ######################################## 
-      name_in_enviroment = paste0("Score at ", i, " Meters")
-      #assign(name_in_enviroment, (MODEL)  , envir = .GlobalEnv)
-      
-      if (j == 'base_10p') {
-        TWFE_Math_base_10p[[name_in_enviroment]] <- (MODEL)
-        SA_Math_base_10p[[name_in_enviroment]] <- (MODEL_SA)
-      } else if (j == 'base_50p') {
-        TWFE_Math_base_50p[[name_in_enviroment]] <- (MODEL)
-        SA_Math_base_50p[[name_in_enviroment]] <- (MODEL_SA)
-      } else if (j == 'base_ic') {
-        TWFE_Math_base_ic[[name_in_enviroment]] <- (MODEL)
-        SA_Math_base_ic[[name_in_enviroment]] <- (MODEL_SA)
-      } else if (j == 'base_ent') {
-        TWFE_Math_base_ent[[name_in_enviroment]] <- (MODEL)
-        SA_Math_base_ent[[name_in_enviroment]] <- (MODEL_SA)
-      }  else if (j == 'base_ai') {
-        TWFE_Math_base_ai[[name_in_enviroment]] <- (MODEL)
-        SA_Math_base_ai[[name_in_enviroment]] <- (MODEL_SA)
-      } else {
-        message('no esta en las tabkas')
-      }
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -122,6 +126,7 @@ if(1==1){
     assign( Sun_Abraham_Modelos, list(), envir = .GlobalEnv)
     
     for (i in kilometros) {
+      tryCatch( {
       print( sprintf(" The model for the treatment time related with:  %s, for the distance: %s is running" , j , i) )
       df = get(tabla)
       
@@ -166,6 +171,8 @@ if(1==1){
       } else {
         message('no esta en las tabkas')
       }
+      }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
+      )
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -174,22 +181,20 @@ if(1==1){
   
 }
  
+etable(  list("100%"=SA_Math_base_ent[["Score at 2000 Meters"]],
+              "50%"=SA_Math_base_50p[["Score at 2000 Meters"]],
+              "10%"=SA_Math_base_10p[["Score at 2000 Meters"]]
+              # ,"100%"=SA_Math_base_ai[["Score at 2000 Meters"]]
+              # , SA_Math_base_ic[["Score at 2000 Meters"]]
+              ))
 
+etable( list(SA_Reading_base_ent[["Score at 2000 Meters"]],
+             SA_Reading_base_50p[["Score at 2000 Meters"]],
+             SA_Reading_base_10p[["Score at 2000 Meters"]]
+             # , SA_Reading_base_ai[["Score at 2000 Meters"]]
+             # , SA_Reading_base_ic[["Score at 2000 Meters"]]
+) )
  
-fixest::iplot( 
-  list(SA_Math_base_ent[["Score at 1000 Meters"]],
-       SA_Math_base_ai[["Score at 1000 Meters"]],
-       SA_Math_base_10p[["Score at 1000 Meters"]],
-       SA_Math_base_50p[["Score at 1000 Meters"]],
-       SA_Math_base_ic[["Score at 1000 Meters"]])
-)
-fixest::iplot( 
-  list(SA_Reading_base_10p[["Score at 1000 Meters"]],
-       SA_Reading_base_ai[["Score at 1000 Meters"]],
-       SA_Reading_base_10p[["Score at 1000 Meters"]],
-       SA_Reading_base_50p[["Score at 1000 Meters"]],
-       SA_Reading_base_ic[["Score at 1000 Meters"]]) 
-)
 
 
 if(2==2){
@@ -214,7 +219,7 @@ if(2==2){
       df = get(tabla)
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
-      
+      tryCatch( {
       df = df %>% subset( df$year <= 2013)  ## df$time_to_treat >= -5 &
       ####### Modelos
       MODEL = feols(finished_uni ~ i(time_to_treat, treat_, ref = reference_time) # + ## Our key interaction: time × treatment status
@@ -254,6 +259,8 @@ if(2==2){
       } else {
         message('no esta en las tabkas')
       }
+      }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
+      )
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -273,6 +280,7 @@ if(2==2){
     for (i in kilometros) {
       print(Sun_Abraham_Modelos)
       df = get(tabla)
+      tryCatch( {
       #df$time_to_treat = ifelse(df$time_to_treat<= -8 , -8, df$time_to_treat)
       #df$time_to_treat = ifelse(df$time_to_treat >= 8 , 8, df$time_to_treat)
       ####### Modelos
@@ -314,6 +322,8 @@ if(2==2){
       } else {
         message('no esta en las tabkas')
       }
+    }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
+    )
       #assign(paste0(lista_modelos,'[[',name_in_enviroment,']]') , list(MODEL)  , envir = .GlobalEnv)
     }
     
@@ -455,25 +465,30 @@ if(3==3){
   }
 }
 
-fixest::iplot( 
-  list(SA_total_profes_preg_base_10p[["Score at 1000 Meters"]] 
-         ,
-         SA_total_profes_preg_base_ai[["Score at 1000 Meters"]] 
-       # SA_total_profes_preg_base_ent[["Score at 1000 Meters"]] , 
-       # SA_total_profes_preg_base_ic[["Score at 1000 Meters"]]
+etable(
+  list("100%"= SA_total_profes_preg_base_ent[["Score at 2000 Meters"]] ,
+       "50%"= SA_total_profes_preg_base_50p[["Score at 2000 Meters"]], 
+       "10%"= SA_total_profes_preg_base_10p[["Score at 2000 Meters"]] 
        ) 
 )
 
-fixest::iplot( 
-  list(SA_total_profes_base_10p[["Score at 1000 Meters"]] 
-       # ,
-       # SA_total_profes_base_ai[["Score at 1000 Meters"]],
-       # SA_total_profes_base_ent[["Score at 1000 Meters"]] , 
-       # SA_total_profes_base_ic[["Score at 1000 Meters"]]
-  ) 
+fixest::coefplot(
+  list("100%"= SA_total_profes_preg_base_ent[["Score at 2000 Meters"]] ,
+       "50%"= SA_total_profes_preg_base_50p[["Score at 2000 Meters"]], 
+       "10%"= SA_total_profes_preg_base_10p[["Score at 2000 Meters"]] )
+  , pt.join = TRUE 
 )
 
-library(stringr)
+legend("topleft", col = 1:3,  lty = 1:3, legend = c("100%", "50%", "10%") )
+
+etable(
+  list("100%"= SA_total_profes_base_ent[["Score at 2000 Meters"]] ,
+       "50%"= SA_total_profes_base_50p[["Score at 2000 Meters"]], 
+       "10%"= SA_total_profes_base_10p[["Score at 2000 Meters"]] 
+  ) 
+)
+ 
+# library(stringr)
 #################################################################################################
 ############## Cross Validation ATT Callawy
 #################################################################################################

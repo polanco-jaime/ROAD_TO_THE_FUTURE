@@ -9,26 +9,29 @@ Var_Y = c(   "math_c"          ,            "reading_c",                   "Part
  "TOTPRE",  "TOTPROF",                     "PROF_TOT",                    "TOTPROF_100kPROF_COL"       ,
  "TOTPRE_100kPROF_COL",              "finished_uni"      )
 
-buffer = 1000
+buffer = c(1000,1500,2000,2500,3000,3500,4000,4500)
 
  
 Resumen_att = data.frame()
-for (j  in Var_Y) {
-  tryCatch( {
-   for (i in tablas) {
-    temp_att = ATT_SA(tabla = i, buffer = 1000, Y_var = j, heterogenities = F)
-    Resumen_att = rbind(Resumen_att,temp_att )
-    # print(Resumen_att)
+for (k in buffer) {
+  for (j  in Var_Y) {
+    tryCatch( {
+      for (i in tablas) {
+        temp_att = ATT_SA(tabla = i, buffer = k, Y_var = j, heterogenities = F)
+        Resumen_att = rbind(Resumen_att,temp_att )
+        # print(Resumen_att)
+      }
+      
+      
+      for (i in tablas) {
+        temp_att = ATT_SA(tabla = i, buffer = k, Y_var = j, heterogenities = 'cole_naturaleza')
+        Resumen_att = rbind(Resumen_att,temp_att )
+        # print(Resumen_att)
+      }
+    }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}  )
   }
-  
-  
-  for (i in tablas) {
-    temp_att = ATT_SA(tabla = i, buffer = 1000, Y_var = j, heterogenities = 'cole_naturaleza')
-    Resumen_att = rbind(Resumen_att,temp_att )
-    # print(Resumen_att)
-  }
-  }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}  )
 }
+
 
 getwd()
 write.csv2(Resumen_att, "C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/Data/Resumen_att.csv")
