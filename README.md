@@ -27,6 +27,5 @@ The paper is available for academic and non-commercial purposes only. Please res
 
 ## Additional Information
 
-For more information about the paper or to obtain the data and code used in the analysis, please contact the author directly.
+For more information about the paper or to obtain the data used in the analysis, please contact the author directly.
 
-Please note that this is a draft README file, and you may want to modify or expand it as necessary to better suit your needs.
