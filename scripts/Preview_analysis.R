@@ -1,14 +1,4 @@
-if (Sys.info()["nodename"] == "CLOUD37") {
-  General_path = "C:/Users/USER/Desktop/01-with-the-boys/"
-  data_dir <- paste0(General_path , "Data/")
-  graphs_dir <-  paste0(General_path , "Graph/") 
-  tables_dir <- paste0(General_path , "Tables/")  
-}  else if (Sys.info()["nodename"] ==  "Jaimes-MacBook-Pro.local" ){
-  General_path = "/Users/jaimepolanco-jimenez/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/01_research/ROAD_TO_THE_FUTURE/" 
-  data_dir <- paste0(General_path , "Data/")
-  graphs_dir <-  paste0(General_path , "Graph/") 
-  tables_dir <- paste0(General_path , "Tables/")   
-}
+
 
 #load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
 lista = c('readr','readxl','sqldf','plyr', 

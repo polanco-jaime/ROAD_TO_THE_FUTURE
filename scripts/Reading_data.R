@@ -1,30 +1,4 @@
-#######################
-#https://lost-stats.github.io/Model_Estimation/Research_Design/event_study.html
-#https://lost-stats.github.io/Model_Estimation/Research_Design/two_by_two_difference_in_difference.html
-#setwd("C:/Users/USER/Desktop/DID roads/")
-# Downloading tabless
-global_path = 'C:/Users/USER/Desktop/DID roads/'
-# shell.exec(paste0(global_path ,'Omit/descarga_bases.bat') )
-# mainDir <- 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/Data'
-# subDir <- "graph"
-global_path = 'C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/'
-#dir.create(file.path(mainDir, subDir))
 
-#load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
-lista = c('readr','readxl','sqldf','plyr', 
-           'did' , 'arrow',  'plyr', 'ggplot2',
-          'dplyr','fixest' , 'gargle' , 'stringr'
-          #, 'bigrquery' 
-)
-for (i in 1:length(lista) ) {
-  if(lista[i] %in% rownames(installed.packages()) == FALSE) {
-    install.packages(lista[i])
-  }
-  lapply(lista[i], library, character.only = TRUE)
-}
-
-# source("C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/scripts/functions.R", echo=TRUE) 
-source(paste0(global_path ,'scripts/functions.R'))
 # devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R")  
 gc()
 ########################## loading full data ################################## 
