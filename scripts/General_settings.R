@@ -18,7 +18,7 @@ if (Sys.info()["nodename"] ==  "Jaimes-MacBook-Pro.local" ){
 
 global_path = General_path
 
-#load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
+ 
 lista = c('readr','readxl','sqldf','plyr', 
           'did' , 'arrow',  'plyr', 'ggplot2',
           'dplyr','fixest' , 'gargle' , 'stringr', 'broom', 
@@ -30,6 +30,4 @@ for (i in 1:length(lista) ) {
   }
   lapply(lista[i], library, character.only = TRUE)
 }
-
-# source("C:/Users/USER/Desktop/DID roads/ROAD_TO_THE_FUTURE/scripts/functions.R", echo=TRUE) 
-source(paste0(global_path ,'scripts/functions.R'))
+source(paste0(global_path ,'/scripts/functions.R'))
