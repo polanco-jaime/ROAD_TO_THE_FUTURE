@@ -48,7 +48,7 @@ SB11_20061 AS (
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20061`  
-                       ORDER BY RAND() LIMIT 15 
+                        -- ORDER BY RAND() LIMIT 15 
                       ),
 SB11_20062 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_cod_dane_institucion,safe_cast(estu_edad AS string) estu_edad, estu_genero, 
                       "2006" ANIO , "2" as periodo,
@@ -95,7 +95,7 @@ SB11_20062 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                     FROM `ph-jabri.SABER11.SB11_20062`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20071 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_cod_dane_institucion, CAST(estu_edad AS STRING) estu_edad, estu_genero, 
                       "2007" ANIO , '1'  as periodo,
@@ -143,7 +143,7 @@ SB11_20071 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20071`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20072 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_cod_dane_institucion, CAST(estu_edad AS STRING) estu_edad, estu_genero, 
@@ -192,7 +192,7 @@ SB11_20072 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20072`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_2008 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_cod_dane_institucion, estu_edad, estu_genero, 
                       "2008" ANIO , _TABLE_SUFFIX  as periodo,
@@ -240,7 +240,7 @@ SB11_2008 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_c
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_2008*`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20091 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_cod_dane_institucion, 
  CAST(estu_edad AS STRING)  estu_edad, estu_genero, 
@@ -323,11 +323,11 @@ SB11_20091 AS  (SELECT ESTU_CONSECUTIVO , COLE_COD_ICFES, COLE_NOMBRE_SEDE,cole_
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20091`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20092 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE, 
- CAST(2009-CAST(LEFT(ESTU_FECHANACIMIENTO, 4)  AS NUMERIC) AS STRING)
- estu_edad, estu_genero, 
+ CAST(2009-CAST(right(ESTU_FECHANACIMIENTO, 4)  AS NUMERIC) AS STRING)  estu_edad,
+ estu_genero, 
                       "2009" ANIO , '1'  as periodo,
                            SAFE_CAST(REPLACE(punt_matematicas	, ',','.')  as NUMERIC) math_i,
                          SAFE_CAST(REPLACE(PUNT_LENGUAJE, ',','.')  as NUMERIC)  reading_i, 
@@ -373,7 +373,7 @@ SB11_20092 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                          'PUBLICAR' ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20092`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20101 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion,
                        cast(2010 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -425,7 +425,7 @@ SB11_20101 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
 
                       FROM `ph-jabri.SABER11.SB11_20101`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 
 SB11_20102 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion, 
@@ -477,7 +477,7 @@ SB11_20102 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
 
                       FROM `ph-jabri.SABER11.SB11_20102`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20111 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion, 
                       cast(2011 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -526,7 +526,7 @@ SB11_20111 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20111`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20112 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion,
                   cast(2011 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -576,7 +576,7 @@ SB11_20112 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20112`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20121 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion,
                        cast(2012 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -626,7 +626,7 @@ SB11_20121 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
                      
                       FROM `ph-jabri.SABER11.SB11_20121`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20122 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion,
                        cast(2012 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -675,7 +675,7 @@ SB11_20122 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
                      
                       FROM `ph-jabri.SABER11.SB11_20122`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20132 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2013 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad, estu_genero, #6
@@ -724,7 +724,7 @@ SB11_20132 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20132`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20131 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2013 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad, estu_genero, 
@@ -773,7 +773,7 @@ SB11_20131 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20131`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20141 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING)  cole_cod_dane_institucion, 
                         cast(2014 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad, estu_genero, 
@@ -824,7 +824,7 @@ SB11_20141 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                       
 
                       FROM `ph-jabri.SABER11.SB11_20141`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20142 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2014 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad, 
@@ -876,7 +876,7 @@ SB11_20142 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                       
 
                       FROM `ph-jabri.SABER11.SB11_20142`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) , 
 SB11_20151 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,
                         COLE_COD_DANE_SEDE cole_cod_dane_institucion, 
@@ -927,7 +927,7 @@ SB11_20151 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20151`  
                        where  PUNT_MATEMATICAS  is not null 
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20152 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,
                         COLE_COD_DANE_SEDE cole_cod_dane_institucion, 
@@ -979,7 +979,7 @@ SB11_20152 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                       
 
                       FROM `ph-jabri.SABER11.SB11_20152`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20161 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING)  cole_cod_dane_institucion,
                       cast(2016 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad,  estu_genero, 
@@ -1030,7 +1030,7 @@ SB11_20161 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                       
 
                       FROM `ph-jabri.SABER11.SB11_20161`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20162 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2016 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad,  estu_genero, 
@@ -1081,7 +1081,7 @@ SB11_20162 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                       
 
                       FROM `ph-jabri.SABER11.SB11_20162`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20171 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2017 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad,  estu_genero, 
@@ -1134,7 +1134,7 @@ SB11_20171 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                           ESTU_ESTADOINVESTIGACION
 
                       FROM `ph-jabri.SABER11.SB11_20171`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 SB11_20172 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2017 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad,  estu_genero, 
@@ -1188,7 +1188,7 @@ SB11_20172 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
 
                   
                       FROM `ph-jabri.SABER11.SB11_20172`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) ,
 
 SB11_20181 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
@@ -1240,7 +1240,7 @@ SB11_20181 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20181`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20182 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
@@ -1292,7 +1292,7 @@ SB11_20182 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20182`  
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20191 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,COLE_COD_DANE_SEDE cole_cod_dane_institucion,
                       cast(2019 - (safe_cast(SPLIT(ESTU_FECHANACIMIENTO, '/')[OFFSET(2)]   as int64)) as string) estu_edad, estu_genero, 
@@ -1346,7 +1346,7 @@ SB11_20191 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
 
                       FROM `ph-jabri.SABER11.SB11_20191`  
                        
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20192 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE_NOMBRE_SEDE,CAST(COLE_COD_DANE_SEDE AS STRING) cole_cod_dane_institucion,
                       cast(2019 - (EXTRACT( YEAR FROM ESTU_FECHANACIMIENTO)) as string) estu_edad,  estu_genero, 
@@ -1397,7 +1397,7 @@ SB11_20192 AS  (SELECT ESTU_CONSECUTIVO , COLE_CODIGO_ICFES COLE_COD_ICFES, COLE
                          END AS COLE_DIVIPOLA,
                           ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20192`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ) , 
 SB11_20201 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
                       COLE_NOMBRE_SEDE, SAFE_CAST(COLE_COD_DANE_SEDE AS STRING)  cole_cod_dane_institucion,
@@ -1452,7 +1452,7 @@ SB11_20201 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                       
 
                       FROM `ph-jabri.SABER11.SB11_20201`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20202 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
@@ -1506,7 +1506,7 @@ SB11_20202 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20202`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20211 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
                       COLE_NOMBRE_SEDE, SAFE_CAST(COLE_COD_DANE_SEDE AS STRING)  cole_cod_dane_institucion,
@@ -1559,7 +1559,7 @@ SB11_20211 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20211`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20212 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
@@ -1614,7 +1614,7 @@ SB11_20212 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20212`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 SB11_20221 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
                       COLE_NOMBRE_SEDE, SAFE_CAST(COLE_COD_DANE_SEDE AS STRING)  cole_cod_dane_institucion,
@@ -1668,7 +1668,7 @@ SB11_20221 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20221`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20222 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
@@ -1723,7 +1723,7 @@ SB11_20222 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20222`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20231 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
@@ -1778,7 +1778,7 @@ SB11_20231 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20231`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 
 SB11_20232 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING) COLE_COD_ICFES,
@@ -1833,7 +1833,7 @@ SB11_20232 AS  (SELECT ESTU_CONSECUTIVO , SAFE_CAST(COLE_CODIGO_ICFES AS STRING)
                          END AS COLE_DIVIPOLA
                      , ESTU_ESTADOINVESTIGACION
                       FROM `ph-jabri.SABER11.SB11_20232`   
-                  ORDER BY RAND() LIMIT 15
+                   -- ORDER BY RAND() LIMIT 15
 ),
 UNIONALL AS (
 SELECT * FROM SB11_20061 
