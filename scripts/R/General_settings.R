@@ -19,10 +19,10 @@ if (Sys.info()["nodename"] ==  "Jaimes-MacBook-Pro.local" ){
 global_path = General_path
 
  
-lista = c('readr','readxl','sqldf','plyr', 
+lista = c('readr','readxl','sqldf','plyr', 'arrow',
           'did' , 'arrow',  'plyr', 'ggplot2',
           'dplyr','fixest' , 'gargle' , 'stringr', 'broom', 
-          "panelView", "bacondecomp", "paneltools","fect","PanelMatch"
+          "panelView", "bacondecomp","fect","PanelMatch","bigrquery" # "paneltools",
 )
 for (i in 1:length(lista) ) {
   if(lista[i] %in% rownames(installed.packages()) == FALSE) {
@@ -31,3 +31,4 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
 source(paste0(global_path ,'/scripts/functions.R'))
+source("~/Polanco/apis.R")

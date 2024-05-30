@@ -1,7 +1,16 @@
 
-# devtools::source_url("https://github.com/JAPJ182/ROAD_TO_THE_FUTURE/blob/main/scripts/functions.R")  
-gc()
 ########################## loading full data ################################## 
+bq_auth(token = STEP1)
+project_id <- "ph-jabri"
+dataset_id <- "04_gender_career_choices"
+table_id <- "schooling_decision_grade_11"
+
+data = bigrquery::bq_table_download(
+  as_bq_table(
+  paste0(  project_id, '.' ,  dataset_id   , '.' ,table_id  )
+   ),
+  n_max  = Inf )
+
 
 setwd(paste0(global_path ,'Data'))
 temp = list.files("./",pattern="*.parquet")
