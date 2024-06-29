@@ -1,21 +1,5 @@
 
-
-#load("C:/Users/USER/Desktop/DID roads/did_roads/did_roads.RData")
-lista = c('readr','readxl','sqldf','plyr', 
-          'did' , 'arrow',  'plyr', 'ggplot2',
-          'dplyr','fixest' , 'gargle' , 'stringr', 'broom', 
-          "panelView", "bacondecomp", "paneltools","fect","PanelMatch"
-          #, 'bigrquery' 
-)
-
  
-
-for (i in 1:length(lista) ) {
-  if(lista[i] %in% rownames(installed.packages()) == FALSE) {
-    install.packages(lista[i])
-  }
-  lapply(lista[i], library, character.only = TRUE)
-}
 # Define the function
 plot_model_effects <- function(model) {
   # Tidy the model output
@@ -43,37 +27,30 @@ plot_model_effects <- function(model) {
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
-
-setwd(paste0(General_path ,'Data'))
-temp = list.files("./",pattern="*.parquet")
-
-
-list2env(
-  lapply(setNames(temp, make.names(gsub("*.parquet$", "", temp))), 
-         arrow::read_parquet), envir = .GlobalEnv  )
-
+ 
+ 
 
 ##################################################
 # Analsis de datos
 # calculate the means
 library(data.table)
 library(ggplot2)
-data = base_ai[ , c("math_c",  "math_c_sd"   , "treat_" ,  "year_treated"  ,  "year" ,"cole_cod_dane", "estu_trabaja",  "cole_naturaleza"   , "buffer_km"  )]
+data$cole_cod_dane_institucion
+data_pv = data_[ , c("sd_reading_i",  "sd_math_i"   , "treat_" , 'year_treated_100p', 'year_treated_50p', 'year_treated_10p', 'year_treated_ai', 'year_treated_ic',  "year" ,"cole_cod_dane_institucion", "estu_trabaja",  "cole_naturaleza"   , "buffer_km"  )]
 # data = na.omit(data)
 # Calculate the means using dplyr
-cohort_means <- data %>%
-  group_by(year_treated, year) %>%
-  summarize(math_c = mean(math_c, na.rm = TRUE), .groups = 'drop')
+ 
+cohort_means <- promedios %>% subset( is.na(.$year_treated_100p)==F ) %>% 
+  group_by(year_treated_100p, year) %>%
+  summarize(sd_math_i = mean(sd_math_i, na.rm = TRUE), .groups = 'drop')
 
 # plot the means
-ggplot(data=cohort_means,aes(x=year,y=math_c,colour=factor(year_treated))) + geom_line() + 
+ggplot(data=cohort_means,aes(x=year,y=sd_math_i,colour=factor(year_treated_100p))) + geom_line() + 
   labs(x = "Year", y = "Outcome", color = "Cohort (Following Sun et al)") + theme_bw(base_size=16)
 
 
 #
-summary(data[data$treat_==0 ,]$math_c ) # Never treated
-
-summary(data[data$treat_==1 ,]$math_c ) # Treated at some point
+ 
 
 
 ###################################################
@@ -83,7 +60,7 @@ summary(data[data$treat_==1 ,]$math_c ) # Treated at some point
 
 
  #Dummies of time to treat
-data$time_to_treat = data$year -  data$year_treated
+data_pv$time_to_treat = data_pv$year -  data$year_treated_10p
 table(data$time_to_treat)
 # data = data[data$time_to_treat<=8 , ]
 
@@ -105,7 +82,7 @@ print(descriptive_statistics_wide)
 
 table(data$treat_relative)
 
-data_avg <- data %>%
+data_avg <- promedios %>%
   group_by(time_to_treat, treat_) %>%
   summarise(math_c_avg = mean(math_c, na.rm = TRUE))
 

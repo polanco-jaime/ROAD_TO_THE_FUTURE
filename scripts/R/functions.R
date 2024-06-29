@@ -13,6 +13,65 @@ for (i in 1:length(lista) ) {
 
 ###################################
 #picture buffers
+library(ggplot2)
+library(dplyr)
+
+
+plot_cohort_means <- function(data, year_treated) {
+ 
+  # Define the custom colors
+  custom_colors <- c(
+    "1994" = "cyan",
+    "2002" = "magenta",
+    "2006" = "yellow",
+    "2007" = "brown",
+    "2010" = "pink",
+    "2011" = "red", 
+    "2012" = "blue", 
+    "2014" = "green", 
+    "2015" = "navy",
+    "2016" = "purple", 
+    "2017" = "orange", 
+    "2018" = "teal",
+    "2019" = "darkgreen", 
+    "2020" = "black", 
+    "2021" = "gray" 
+  )
+  custom_linetypes <- c(
+    "1994" = "solid",
+    "2002" = "solid",
+    "2006" = "solid",
+    "2007" = "solid",
+    "2010" = "solid",
+    "2011" = "solid", 
+    "2012" = "solid", 
+    "2014" = "solid", 
+    "2015" = "solid",
+    "2016" = "solid", 
+    "2017" = "solid", 
+    "2018" = "solid",
+    "2019" = "solid", 
+    "2020" = "dashed", 
+    "2021" = "dashed" 
+  ) 
+  
+  # Filter and summarize the data
+  cohort_means <- data %>%
+    filter(!is.na(!!sym(year_treated))) %>% 
+    group_by(!!sym(year_treated), year) %>%
+    summarize(sd_math_i = mean(sd_math_i, na.rm = TRUE), .groups = 'drop')
+  
+  # Plot the means
+  ggplot(data = cohort_means, aes(x = year, y = sd_math_i, colour = factor(!!sym(year_treated)), linetype = factor(!!sym(year_treated)))) + 
+    geom_line(size = 0.5) + 
+    # scale_color_manual(values = custom_colors) + 
+    scale_linetype_manual(values = custom_linetypes) +
+    labs(x = "Year", y = "Outcome", color = "Cohort (Following Sun et al)", linetype = "Cohort (Following Sun et al)") + 
+    theme_bw(base_size = 16)
+}
+
+# Example usage
+# 
 
 pvaluebuffer <- function(model_list, titulo,subject, reference_time){
   library(ggplot2)
