@@ -13,10 +13,281 @@ for (i in 1:length(lista) ) {
 
 ###################################
 #picture buffers
-library(ggplot2)
-library(dplyr)
+generate_file_name <- function(title) {
+  # Remove special characters, spaces, and make lowercase
+  cleaned_title <- gsub("[^[:alnum:]]", "_", title)
+  cleaned_title <- gsub("\\s+", "_", cleaned_title)
+  cleaned_title <- gsub("__", "_", cleaned_title)
+  cleaned_title <- tolower(cleaned_title)
+  return(cleaned_title)
+}
 
+event_study_plot_sunab_2021 = function (out, seperate = TRUE, horizon = NULL, TITULO= '') {
 
+  mynamestheme <- ggplot2::theme(
+    plot.title = element_text(family = "sans", face = "bold", size = 15, hjust = 0.5, vjust = 0.5),
+    legend.title = element_text(colour = "steelblue", face = "bold.italic", family = "sans"),
+    legend.text = element_text(face = "italic", colour = "steelblue4", family = "sans"),
+    axis.title = element_text(family = "sans", face = "bold", size = 12, colour = "steelblue4"),
+    axis.text = element_text(family = "mono", face = "bold", colour = "cornflowerblue", size = 12),
+    legend.position = "bottom"
+  )
+  estimators = unique(out$estimator)
+  levels = c("TWFE", "Borusyak, Jaravel, Spiess (2021)", "Callaway and Sant'Anna (2021)", 
+             "Gardner (2021)", "Roth and Sant'Anna (2021)", "Sun and Abraham (2021)",
+             "Score at 1000 Meters" ,"Score at 1500 Meters" ,"Score at 2000 Meters",
+             "Score at 2500 Meters" ,"Score at 3000 Meters" ,"Score at 3500 Meters",
+             "Score at 4000 Meters" ,"Score at 4500 Meters", 'Private schools' , 
+             'Public schools' ,  'All sample schools' 
+  )
+  
+  levels = levels[levels %in% estimators]
+  out$estimator = factor(out$estimator, levels = levels)
+  
+  color_scale = c(TWFE = "#374E55", `Gardner (2021)` = "#DF8F44", 
+                  `Callaway and Sant'Anna (2021)` = "#00A1D5", `Sun and Abraham (2021)` = "#B24745",
+                  `Roth and Sant'Anna (2021)` = "#79AF97", `Borusyak, Jaravel, Spiess (2021)` = "#6A6599",
+                  `Score at 1000 Meters`  = "#374E55" , `Score at 1500 Meters` = "#DF8F44" ,`Score at 2000 Meters`  = "#00A1D5",
+                  `Score at 2500 Meters`= "#B24745" , `Score at 3000 Meters` = "#79AF97",`Score at 3500 Meters` = "#6A6599",
+                  `Score at 4000 Meters` = '#ED8975' , `Score at 4500 Meters` = '#EAAC8B' , 
+                  `Private schools` = "#374E55", `Public schools` = "#DF8F44", 
+                  `All sample schools` = "#00A1D5"   )
+  
+  color_scale = color_scale[names(color_scale) %in% estimators]
+  out$ci_lower = out$Estimate - 1.96 * out$Std..Error
+  out$ci_upper = out$Estimate + 1.96 * out$Std..Error
+  position <- ifelse(seperate, "identity", ggplot2::position_dodge(width = 0.2))
+  
+  if (!is.null(horizon)) {
+    out = out[out$period >= horizon[1] & out$period <= horizon[2],  ] 
+  }
+  y_lims = c(min(out$ci_lower), max(out$ci_upper)) * 1.05
+  x_lims = c(min(out$period) - 0.5, max(out$period) + 0.5)
+  
+  x_min <- min(out[out$ref_p == T, "period"], na.rm = TRUE)
+  x_max <- max(out[out$ref_p == T, "period"], na.rm = TRUE)
+  
+  # Define shadow_rect with scalar xmin and xmax
+  shadow_rect <- geom_rect(
+    aes(xmin = as.numeric(x_min), xmax = as.numeric(x_max), ymin = -Inf, ymax = Inf, fill = "red4", alpha = 0.1),
+    alpha = 0.1,
+    inherit.aes = FALSE,  # don't inherit aesthetics from other layers
+    show.legend = FALSE   # hide rectangle from legend
+  )
+ 
+ 
+  
+  Plot= ggplot2::ggplot(data = out, ggplot2::aes(x = .data$period, 
+                                                 y = .data$Estimate, 
+                                                 color = .data$estimator,
+                                                 ymin = .data$ci_lower , 
+                                                 ymax = .data$ci_upper)) + 
+                                              # {
+                                              #      if (seperate) 
+                                              #        ggplot2::facet_wrap(~estimator, scales = "free")
+                                              #    }  +  
+    theme_light()  +
+    shadow_rect +
+    ggplot2::geom_point(position = position, size = 1.2) + 
+    # shadow_rect + 
+    ggplot2::geom_errorbar(position = position, width  = 0.15) + 
+    ggplot2::geom_vline(xintercept = x_min, linetype = "dashed") + 
+    ggplot2::geom_vline(xintercept =x_max, linetype = "dashed") + 
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed")  +
+   
+    ggplot2::ggtitle(TITULO)+ 
+    ggplot2::scale_x_continuous(limits = x_lims, breaks = c(  (min(out$period)  ) :  (max(out$period)   ) ) ) +
+    # ggplot2::geom_tile(colour="white" ) +
+    
+    ggplot2::theme(  plot.title = element_text(hjust = 0.5, vjust = 0.5),
+                     axis.line.x = element_line(color="steelblue4", size = 0.5),
+                     axis.line.y = element_line(color="steelblue4", size = 0.5) ) +
+    
+    ggplot2::labs(y = "Point Estimate and 95% Confidence Interval", 
+                  x = "Event Time", color = "Estimator") + {
+                    if (seperate) 
+                      ggplot2::scale_y_continuous(limits = y_lims)
+                  } + {
+                    if (seperate) 
+                      ggplot2::scale_x_continuous(limits = x_lims, breaks =  c(  (min(out$period)  ) :  (max(out$period)   ) ) )
+                  }  + ggplot2::scale_color_manual(values = color_scale)  
+  P =  Plot +
+    theme_w_did( )     + mynamestheme   
+  print(P  )
+}
+SA_Result_table = function(model){
+  sa_result = data.frame(model[["coeftable"]])
+  sa_result$period = as.numeric( gsub("year::", "", row.names(sa_result) ))
+  row.names(sa_result)= NULL
+  sa_result$ref_p = 1
+  sa_result = rbind(sa_result,
+                    data.frame(
+                      "Estimate" =0,  "Std..Error" =0, "t.value" =0,    "Pr...t.." =0,
+                      "period" = min(sa_result$period,na.rm = T):max(sa_result$period,na.rm = T) , 'ref_p' = 1
+                      
+                    )
+  )
+  sa_result = arrange(sa_result, period)
+  
+  sa_result <- sa_result %>%
+    group_by(period) %>%
+    summarise(Estimate = sum(Estimate),
+              Std..Error = sum(Std..Error),
+              t.value = sum(t.value),
+              Pr...t.. =sum(Pr...t..) , 
+              ref_p = sum(ref_p)
+    )
+  
+  sa_result$ref_p = ifelse(sa_result$ref_p==1, T, F)
+  sa_result$estimator = "Sun and Abraham (2021)"
+  return(sa_result)
+}
+create_latex_table <- function(result, caption = "Table caption", label = "tab:label") {
+  # Calculate average of the first column
+  average <- mean(result[[1]], na.rm = TRUE) # Access column by name
+  
+  # Format each row as a LaTeX table row
+  latex_rows <- apply(result, 1, function(row) {
+    paste(row[c(1, 2)], collapse = " & ")  # Select specific columns
+  })
+  
+  # Combine rows into a complete LaTeX table format
+  latex_table <- paste("\\begin{table}[ht]", 
+                       "\\begin{tabular}{cc}
+ ", # Adjust column alignment as needed
+                       "\\hline
+ ",
+                       "Delta Time & Road Name \\\\ \\hline
+ ",
+                       paste(latex_rows, collapse = "\\\\
+       "),  # Combine rows with line breaks
+                       "\\hline
+ ",
+                       sprintf("Average & %.2f \\\\ \\hline
+         ", average),
+                       "\\end{tabular}
+ ",
+                       sprintf("\\caption{%s}
+         ", caption), # Add your caption
+                       sprintf("\\label{%s}
+         ", label),
+                       "\\end{table}")
+  
+  return(latex_table)
+}
+plot_histogram_output <- function(data, output, heterogenity, plot_title) {
+  data$output = data[[output]]
+  data$heterogenity = data[[heterogenity]]
+  data = data[!is.na(data[[heterogenity]]), ]
+  
+  # Calculate mean of output variable for each level of heterogenity
+  mean_data <- aggregate(output ~ heterogenity, data = data, FUN = mean, na.rm = TRUE)
+  
+  # Plotting
+  plot <- ggplot(data, aes(x = output)) +
+    geom_histogram(aes(y = ..density..), binwidth = 0.2, fill = "blue", color = "black", alpha = 0.7) +
+    geom_density(fill = "red", alpha = 0.5) +
+    facet_wrap(~ heterogenity, scales = "free") +
+    labs(title = plot_title,
+         x = "Average SD",
+         y = "Density") +
+    theme_minimal() +
+    # Add vertical dashed lines for each mean value
+    geom_vline(data = mean_data, aes(xintercept = output, color = heterogenity),
+               linetype = "dashed", size = 0.5) +
+    # Add text annotations for each mean value
+    geom_text(data = mean_data, aes(x = output, label = paste("Mean:", round(output, 2)),
+                                    y = -Inf, color = heterogenity),
+              vjust = -1, hjust = 0.5, size = 5, color = "green")
+  
+  print(plot)
+}
+acumulative_treatment = function(data = data.frame(), year_treated='', ids = '', reference_title_date = '10% of the Concession Progress'){
+  data$year_treated__ = data[[year_treated]]
+  data$ids__ = data[[ids]]
+  colegios_tratados_por_ano <- data %>%
+    filter(!is.na(year_treated__)) %>%  # Filtrar para eliminar las filas donde no hay tratamiento
+    group_by(year_treated__) %>%  # Agrupar por año de tratamiento
+    summarise(num_colegios = n_distinct(ids__))  # Contar colegios únicos
+  
+  colegios_tratados_por_ano = rbind(colegios_tratados_por_ano,
+                                    data.frame("year_treated__" = min(colegios_tratados_por_ano$year_treated__,na.rm = T):max(colegios_tratados_por_ano$year_treated__,na.rm = T) ,
+                                               "num_colegios" =0
+                                    )
+  )
+  
+  colegios_tratados_por_ano <- colegios_tratados_por_ano %>% 
+    group_by(year_treated__) %>%  # Agrupar por año de tratamiento
+    summarise(num_colegios = sum(num_colegios))  # Contar colegios únicos
+  
+  
+  colegios_tratados_por_ano <- colegios_tratados_por_ano %>%
+    arrange(year_treated__) %>%  # Ordenar por año de tratamiento
+    mutate(cumulative_colegios = cumsum(num_colegios))  # Calcular la suma acumulada
+  
+  
+  colegios_tratados_por_ano$Treated_rate = colegios_tratados_por_ano$cumulative_colegios/max(colegios_tratados_por_ano$cumulative_colegios, na.rm = T)
+  minimo = min(colegios_tratados_por_ano$year_treated__)
+  maximo = max(colegios_tratados_por_ano$year_treated__)
+  breaks_ = (minimo: maximo)
+  
+  plot = ggplot(colegios_tratados_por_ano, aes(x = year_treated__)) +
+    geom_bar(aes(y = 1), stat = "identity", fill = "white", color = "gray", width = 0.8, alpha = 0.8) +
+    geom_bar(aes(y = Treated_rate, fill = "Treated"), stat = "identity", color = "gray", width = 0.8) +
+    labs(title = paste0( "Cumulative Treatment Progress of Schools by Year\n (Reference Date: ", reference_title_date,")" ),
+         x = "Year of Treatment",
+         y = "Cumulative Treated Rate",
+         fill = "Legend") +
+    scale_fill_manual(name = "Legend", values = c("white" = "white", "Treated" = "lightblue"),
+                      labels = c("Treated", "Treated")) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +  
+    scale_x_continuous(breaks = breaks_) + 
+    theme_minimal(base_size = 15) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      axis.title = element_text(face = "bold"),
+      axis.text = element_text(color = "black"),
+      panel.grid.major = element_line(color = "grey", size = 0.2),
+      panel.grid.minor = element_blank()
+    )
+  print(plot)
+  return(c(plot, colegios_tratados_por_ano) )
+}
+
+balancing_data <- function(data=data.frame(), id = 'string: colname id',
+                           time_references = 'string: colname period observation'
+){
+ 
+  
+  data$Id_ = data[[id]]
+  data$Id_ = as.character(data$Id_) 
+  data = subset(data, is.na( data$Id_ )==F )
+  data$time_references__ = data[[time_references]]
+  data = subset(data, is.na( data$time_references__ )==F )
+ 
+  print(paste0("The number of unique IDs: " , length(unique(data$Id_))))
+  print(paste0("The number of unique periods of references are: " , length(unique(data$time_references__))))
+  print(paste0("The number periods of references are: " , (paste0(sort(unique(data$time_references__)), collapse = ' ' ))))
+  table((data$time_references__ ))
+  complete_ids <- data %>%
+    group_by(Id_) %>%
+    summarise(n_years = n_distinct(time_references__)) %>%
+    filter(n_years == length(unique(data$time_references__))) %>%
+    pull(Id_)
+    print(length(complete_ids))
+  filtered_data <- data %>%
+    filter(Id_ %in% complete_ids)
+  all_combinations <- expand.grid(
+    Id_ = unique(filtered_data$Id_),
+    time_references__ = unique(filtered_data$time_references__) )
+  
+  data <- all_combinations %>%
+    left_join(filtered_data, by = c("Id_", "time_references__"))
+  
+ data =  data[, 1: (length(colnames(data)) - 2) ]
+  return(data)
+  
+} 
 plot_cohort_means <- function(data, year_treated) {
  
   # Define the custom colors

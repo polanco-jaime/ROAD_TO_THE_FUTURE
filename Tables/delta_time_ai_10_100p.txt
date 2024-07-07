@@ -1,0 +1,19 @@
+\begin{table}[ht] \begin{tabular}{cc}
+  \hline
+  Delta Time & Road Name \\ \hline
+  4 & NA\\
+       7 &  5\\
+       4 &  9\\
+       4 &  7\\
+       5 & NA\\
+       5 & NA\\
+       4 &  2\\
+       4 &  9\\
+       3 &  3\\
+       5 & NA\\
+       4 & NA \hline
+  Average & 4.45 \\ \hline
+          \end{tabular}
+  \caption{Your caption here}
+          \label{tab:yourlabel}
+          \end{table}

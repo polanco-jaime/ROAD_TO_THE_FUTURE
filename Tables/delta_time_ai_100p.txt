@@ -1,0 +1,14 @@
+\begin{table}[ht] \begin{tabular}{cc}
+  \hline
+  Delta Time & Road Name \\ \hline
+  12 & Briceño - Tunja - Sogamoso\\
+       13 & Girardot - Ibagué - Cajamarca\\
+       11 & Córdoba - Sucre\\
+        6 & Puerta de Hierro - Palmar de Varela y Carreto - Cruz del Viso\\
+       13 & Ruta Caribe\\
+        6 & Honda - Puerto Salgar - Girardot \hline
+  Average & 10.17 \\ \hline
+          \end{tabular}
+  \caption{Your caption here}
+          \label{tab:yourlabel}
+          \end{table}
