@@ -1,15 +1,20 @@
 options(scipen=999)
 # ########################## loading full data ################################## 
 # bq_auth(token = STEP1)
-# project_id <- "ph-jabri"
-# dataset_id <- "01_road_to_the_future"
-# table_id <- "BASE_ROADS_TO_THE_FUTURE"
-# 
+project_id <- "ph-jabri"
+dataset_id <- "01_road_to_the_future"
+table_id <- "BASE_ROADS_TO_THE_FUTURE"
+
+# SELECT * FROM 
+# where SB_PRO =  1 or SB_TYT = 1
+
 # data = bigrquery::bq_table_download(
 #   as_bq_table(
 #   paste0(  project_id, '.' ,  dataset_id   , '.' ,table_id  )
 #    ),
 #   n_max  = Inf )
+# 
+# data = data[data$SB_PRO ==1 | data$SB_TYT ==1, ]
 
 # arrow::write_parquet(data, 'Data/road_to_the_future.parquet')
 
@@ -34,6 +39,8 @@ data = subset(data, as.numeric(data$ANIO) <=2021)
 
 #
 sqldf::sqldf("SELECT   cole_naturaleza , COUNT(DISTINCT cole_cod_d) TOT FROM data group by 1")
+sqldf::sqldf("SELECT   cole_naturaleza , COUNT(DISTINCT estu_consecutivo_sbtyt) TOT FROM data group by 1")
+ 
 data = subset(data, data$cole_naturaleza =="PUBL")
 
 sqldf::sqldf("SELECT   cole_naturaleza , COUNT(DISTINCT cole_cod_d) TOT FROM data group by 1")

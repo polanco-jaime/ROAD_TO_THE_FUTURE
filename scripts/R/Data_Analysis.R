@@ -2,12 +2,12 @@
 
 
 ## Biased ATT
-hist(data_$sd_math_i)
-hist(data_$math_i)
-summary(data_$sd_math_i)
+hist(data_ai$sd_math_i)
+hist(data_ai$math_i)
+summary(data_ai$sd_math_i)
 
-hist(data_[data_$treat_==1, ]$sd_math_i)
-hist(data_[data_$treat_==1, ]$math_i)
+hist(data_ai[data_ai$treat_==0, ]$sd_math_i)
+hist(data_ai[data_ai$treat_==0, ]$math_i)
 # summary(data_[data_$treat_==1, ]$sd_math_i)
 # 
 # summary(lm(data=data_,sd_math_i~ treat_) )
@@ -24,7 +24,7 @@ hist(data_[data_$treat_==1, ]$math_i)
 
 
 # Calcular el promedio por cada cole_cod_d y variables de tratamiento
-promedios <- data_ %>%
+promedios <- data_ai %>%
   group_by(cole_cod_d, year_treated_10p  #,year_treated_100p, year_treated_50p, year_treated_ai, year_treated_ic
            , year) %>%
   summarise(
@@ -44,11 +44,11 @@ promedios <- data_ %>%
 # print(promedios)
 # Crear el histograma y densidad de promedio_sd_math_i faceteado por año
 library(ggplot2)
-plot_histogram_output(data_10p[data_10p$time_to_treat_10p==-2 | data_10p$time_to_treat_10p==2, ], 
+plot_histogram_output(data_10p[data_10p$time_to_treat_10p==-2 , ], 
                       output = 'sd_math_i','time_to_treat_10p',
                       plot_title = "Histogram and Density of Average SD Math") 
 
-plot_histogram_output(data_10p[data_10p$time_to_treat_10p==-2 | data_10p$time_to_treat_10p==2, ], 
+plot_histogram_output(data_10p[data_10p$time_to_treat_10p==-2  , ], 
                       output = 'sd_reading_i','time_to_treat_10p',
                       plot_title = "Histogram and Density of Average SD Math") 
 #-----
@@ -69,10 +69,133 @@ plot_histogram_output(data_100p[data_100p$time_to_treat_100p==-2 | data_100p$tim
 plot_histogram_output(data_100p[data_100p$time_to_treat_10p==-2 | data_100p$time_to_treat_10p==2, ], 
                       output = 'sd_reading_i','time_to_treat_10p',
                       plot_title = "Histogram and Density of Average SD Math")
-
+ 
 ###### 
 # Cohortes
 ######
+# antes de tratamiento
+sqldf::sqldf("
+  SELECT 
+    
+    AVG(sd_reading_i) AS avg_sd_reading_i, 
+    STDEV(sd_reading_i) AS stddev_sd_reading_i,
+    
+    AVG(DISTANCE) AS avg_DISTANCE_i, 
+    STDEV(DISTANCE) AS stddev_DISTANCE_i,
+    
+    AVG(sd_math_i) AS avg_sd_math_i, 
+    STDEV(sd_math_i) AS stddev_sd_math_i,
+       AVG(ESTU_INSE_INDIVIDUAL) AS avg_ESTU_INSE_INDIVIDUAL_i, 
+    STDEV(ESTU_INSE_INDIVIDUAL) AS stddev_ESTU_INSE_INDIVIDUAL_i
+  FROM 
+    data_ai 
+  WHERE
+    time_to_treat_ai < 0
+ 
+")
+
+sqldf::sqldf("
+SELECT     AVG(TOTAL) AS avg_TOTAL_i, 
+    STDEV(TOTAL) AS stddev_TOTAL_i
+    FROM (
+  SELECT  cole_cod_dane_institucion, ANIO, COUNT(DISTINCT ESTU_CONSECUTIVO) TOTAL 
+  FROM 
+    data_ai 
+  WHERE
+    time_to_treat_ai < 0 
+  GROUP BY 1,2
+    )
+")
+
+ 
+
+child_post = sqldf::sqldf("
+SELECT  * 
+    FROM (
+  SELECT  cole_cod_dane_institucion, COUNT(DISTINCT ESTU_CONSECUTIVO) TOTAL, sum(estu_trabaja) estu_trabaja
+  FROM 
+    data_10p 
+  WHERE
+    time_to_treat_10p < 0 and estu_trabaja is not null
+  GROUP BY 1
+    )
+")
+child_post$child_ratio = child_post$estu_trabaja/child_post$TOTAL
+mean(child_post$child_ratio )
+sd(child_post$child_ratio)
+
+################## 
+# Despeus de tratamiento
+
+sqldf::sqldf("
+  SELECT 
+    
+    AVG(sd_reading_i) AS avg_sd_reading_i, 
+    STDEV(sd_reading_i) AS stddev_sd_reading_i,
+    
+    AVG(DISTANCE) AS avg_DISTANCE_i, 
+    STDEV(DISTANCE) AS stddev_DISTANCE_i,
+    
+    AVG(sd_math_i) AS avg_sd_math_i, 
+    STDEV(sd_math_i) AS stddev_sd_math_i,
+    
+    AVG(ESTU_INSE_INDIVIDUAL) AS avg_ESTU_INSE_INDIVIDUAL_i, 
+    STDEV(ESTU_INSE_INDIVIDUAL) AS stddev_ESTU_INSE_INDIVIDUAL_i
+  FROM 
+    data_100p 
+  WHERE
+    time_to_treat_100p > 0
+ 
+")
+sqldf::sqldf("
+SELECT     AVG(TOTAL) AS avg_TOTAL_i, 
+    STDEV(TOTAL) AS stddev_TOTAL_i
+    FROM (
+  SELECT  cole_cod_dane_institucion, ANIO, COUNT(DISTINCT ESTU_CONSECUTIVO) TOTAL
+  FROM 
+    data_100p 
+  WHERE
+    time_to_treat_100p > 0
+  GROUP BY 1,2
+    )
+")
+
+child_post = sqldf::sqldf("
+SELECT  * 
+    FROM (
+  SELECT  cole_cod_dane_institucion, COUNT(DISTINCT ESTU_CONSECUTIVO) TOTAL, sum(estu_trabaja) estu_trabaja
+  FROM 
+    data_100p 
+  WHERE
+    time_to_treat_100p > 0 and estu_trabaja is not null
+  GROUP BY 1
+    )
+")
+child_post$child_ratio = child_post$estu_trabaja/child_post$TOTAL
+mean(child_post$child_ratio )
+sd(child_post$child_ratio)
+# Cargar librerías
+library(dplyr)
+0.373-0.092
+ 
+# Calcular el promedio y la desviación estándar de math_i por escuela (s) y año (t)
+data_10p = standardize_scores(data_10p, 'math_i', standardized_math_i) 
+data_10p = standardize_scores(data_10p, 'reading_i', standardized_reading_i) 
+
+data_ai = standardize_scores(data_ai, 'math_i', standardized_math_i) 
+data_ai = standardize_scores(data_ai, 'reading_i', standardized_reading_i) 
+
+data_50p = standardize_scores(data_50p, 'math_i', standardized_math_i) 
+data_50p = standardize_scores(data_50p, 'reading_i', standardized_reading_i) 
+
+data_100p = standardize_scores(data_100p, 'math_i', standardized_math_i) 
+data_100p = standardize_scores(data_100p, 'reading_i', standardized_reading_i) 
+
+
+ 
+
+#########################
+plot_cohort_means(data = data_10p, year_treated = "year_treated_10p")
 
 plot_cohort_means(data = data_10p, year_treated = "year_treated_10p")
 plot_cohort_means(data = data_100p, year_treated = "year_treated_100p")

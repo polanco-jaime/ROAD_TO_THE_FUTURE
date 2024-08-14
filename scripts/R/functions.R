@@ -10,9 +10,330 @@ for (i in 1:length(lista) ) {
   }
   lapply(lista[i], library, character.only = TRUE)
 }
-
+library(xtable)
 ###################################
 #picture buffers
+
+# Function to create a LaTeX table from the ATT summary
+sunab_att_latex_table<- function(df, note='', caption = '', label='') {
+  # Create the table header
+  header <- "\\begin{table}[H]\n\\centering\n"
+  header <- paste0(header, "\\caption{", caption, "}\n")
+  header <- paste0(header, "\\label{", label, "}\n")
+  header <- paste0(header, " \\begin{center}\n \\begin{tabular}{lc}\n \\toprule\n")
+  header <- paste0(header, "Metric & Value \\\\\n\\midrule\n")
+  
+  # Create the table body
+  body <- ""
+  for (i in 1:nrow(df)) {
+    metric <- df$Metric[i]
+    value <- df$Value[i]
+    row <- paste0(metric, " & ", value, " \\\\\n")
+    body <- paste0(body, row)
+  }
+  
+  # Create the table footer
+  footer <- "\\bottomrule\n\\end{tabular}\n \\end{center}"
+  footer <- paste0(footer, "\\begin{tablenotes}\n\\small\n")
+  footer <- paste0(footer, "\\item \\textbf{Note:} ", note, "\n")
+  footer <- paste0(footer, "\\item Significance codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
+  footer <- paste0(footer, "\\end{tablenotes}\n\\end{table}")
+  
+  # Combine header, body, and footer
+  latex_table <- paste0(header, body, footer)
+  
+  # Return the LaTeX table
+  return(latex_table)
+}
+
+# Function to create a table from the ATT summary
+sunab_att_table <- function(model_string, digits = 4) {
+  model <- get(model_string)
+  name_mod <- model_string
+  file_path <- paste0('Tables/', model_string, '.tex')
+  
+  # Extract the summary with ATT
+  att_summary <- summary(model, agg = "ATT")
+  
+  # Extract relevant details
+  att_estimate <- round(att_summary[["coeftable"]][1, 1], digits)
+  std_error <- round(att_summary[["coeftable"]][1, 2], digits)
+  t_value <- round(att_summary[["coeftable"]][1, 3], digits)
+  p_value <- round(att_summary[["coeftable"]][1, 4], digits)
+  adj_r2 <- round(att_summary[["sq.cor"]], digits)
+  
+  rmse <- round(sqrt(att_summary[["sigma2"]]), digits)
+  observations <- att_summary$nobs
+  fe_info <- as.character(att_summary[["fml_all"]][["fixef"]][[2]])
+  se_clustered <- paste0(model[["call"]][["cluster"]][[2]][[2]], ", ", model[["call"]][["cluster"]][[2]][[3]])
+  within_r2 <- round(1 - ((1 - adj_r2) * (observations - 1)) / (observations - length(fe_info) - 1), digits)
+  
+  fe_ <- gsub(pattern = '_', replacement = ' ', paste(fe_info[2], ", ", fe_info[3]))
+  fe_ <- gsub( pattern =  'NOMBRE',replacement = 'Road ID',  gsub(pattern =  'cole_cod_dane_institucion', replacement = 'School ID' ,  paste(fe_info[2], ", ", fe_info[3]) ) )
+  se_clustered <- gsub( pattern =  'NOMBRE',replacement = 'Road ID',  gsub(pattern =  'cole_cod_dane_institucion', replacement = 'School ID' ,  se_clustered ) )
+  # Add significance stars
+  signif_codes <- c("***" = 0.001, "**" = 0.01, "*" = 0.05, "." = 0.1)
+  signif_star <- ""
+  for (star in names(signif_codes)) {
+    if (p_value <= signif_codes[star]) {
+      signif_star <- star
+      break
+    }
+  }
+  
+  # Create the table
+  table <- data.frame(
+    Metric = c("ATT Estimate", "\\hline \n Adjusted R²", "Within R²", "RMSE", "Observations", "\\hline \n Fixed Effects", 'S.E. Clustered by'),
+    Value = c(paste0(att_estimate, " (", std_error, ")", signif_star ), adj_r2, within_r2, rmse, observations, fe_, se_clustered)
+  )
+  
+  # Combine header, body, and footer
+  note <- "The table reports panel estimates of the effect of ..."
+  latex_table <- sunab_att_latex_table(df = table, note = note, caption = "Summary of ATT Estimate", label = paste0("tab:", name_mod))
+  
+  # Write the table to a .tex file
+  sink(file_path)
+  cat(latex_table)
+  sink() 
+  
+  print(table)
+  return(latex_table)
+}
+# Function to extract metrics and create a unified LaTeX table
+create_unified_table_sunab <- function(tables_list, caption, label) {
+  # Initialize vectors to store metrics
+  att_estimates <- c()
+  adj_r_squared <- c()
+  within_r_squared <- c()
+  rmse <- c()
+  observations <- c()
+  fixed_effects <- c()
+  se_clustered_by <- c()
+  
+  # Loop through each table to extract the metrics
+  for (table in tables_list) {
+    # Extract ATT Estimate
+    att_match <- regmatches(table, regexpr("ATT Estimate & [^\\\\]+", table))
+    att_estimates <- c(att_estimates, sub("ATT Estimate & ", "", att_match))
+    
+    # Extract Adjusted R²
+    adj_r_match <- regmatches(table, regexpr("Adjusted R² & [^\\\\]+", table))
+    adj_r_squared <- c(adj_r_squared, sub("Adjusted R² & ", "", adj_r_match))
+    
+    # Extract Within R²
+    within_r_match <- regmatches(table, regexpr("Within R² & [^\\\\]+", table))
+    within_r_squared <- c(within_r_squared, sub("Within R² & ", "", within_r_match))
+    
+    # Extract RMSE
+    rmse_match <- regmatches(table, regexpr("RMSE & [^\\\\]+", table))
+    rmse <- c(rmse, sub("RMSE & ", "", rmse_match))
+    
+    # Extract Observations
+    obs_match <- regmatches(table, regexpr("Observations & [^\\\\]+", table))
+    observations <- c(observations, sub("Observations & ", "", obs_match))
+    
+    # Extract Fixed Effects
+    fe_match <- regmatches(table, regexpr("Fixed Effects & [^\\\\]+", table))
+    fixed_effects <- c(fixed_effects, sub("Fixed Effects & ", "", fe_match))
+    
+    # Extract S.E. Clustered by
+    se_match <- regmatches(table, regexpr("S.E. Clustered by & [^\\\\]+", table))
+    se_clustered_by <- c(se_clustered_by, sub("S.E. Clustered by & ", "", se_match))
+  }
+  
+  # Generate the LaTeX table header
+  header <- "\\begin{table}[H]\n"
+  header <- paste0(header, "\\centering\n")
+  header <- paste0(header, "\\caption{", caption, "}\n")
+  header <- paste0(header, "\\label{", label, "}\n  \\begin{center}\n ")
+  header <- paste0(header, "\\begin{tabular}{lcccc}\n\\hline\n")
+  
+  # Generate the LaTeX table body
+  body <- "Metric            & 0\\% Completion     & 10\\% Completion    & 50\\% Completion    & 100\\% Completion     \\\\ \\hline\n"
+  body <- paste0(body, "ATT Estimate      & ", paste(att_estimates, collapse="   & "), "   \\\\ \\hline\n")
+  body <- paste0(body, "Adjusted R²       & ", paste(adj_r_squared, collapse="             & "), "             \\\\\n")
+  body <- paste0(body, "Within R²         & ", paste(within_r_squared, collapse="             & "), "             \\\\\n")
+  body <- paste0(body, "RMSE              & ", paste(rmse, collapse="             & "), "             \\\\\n")
+  body <- paste0(body, "Observations      & ", paste(observations, collapse="             & "), "             \\\\ \\hline\n")
+  body <- paste0(body, "Fixed Effects     & ", paste(fixed_effects, collapse="   & "), "   \\\\\n")
+  body <- paste0(body, "S.E. Clustered by & ", paste(se_clustered_by, collapse=" & "), " \\\\ \\hline\n")
+  
+  # Generate the LaTeX table footer
+  # footer <- "\\end{tabular}\n\\end{table}"
+  footer <- "\\bottomrule\n\\end{tabular}\n \\end{center}"
+  footer <- paste0(footer, "\\begin{threeparttable}\n \\begin{tablenotes}\n\\small\n")
+  footer <- paste0(footer, "\\item \\textbf{Note:} ", note, "\n")
+  footer <- paste0(footer, "\\item Significance codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
+  footer <- paste0(footer, "\\end{tablenotes}\n \\end{threeparttable}\n \\end{table}")
+  
+  # Combine header, body, and footer
+  latex_table <- paste0(header, body, footer)
+  
+  return(latex_table)
+}
+
+unify_sunab_att_tables <- function( models, completions, caption, att_outcome) {
+  # Initialize an empty list to store the tables
+  tables_list <- list()
+  file_path = paste0('Tables/', att_outcome, '.tex')
+  # Loop through the models and retrieve the tables
+  for (i in seq_along(models)) {
+    table <- sunab_att_table(models[i])
+    
+    # Rename the value column based on the corresponding completion percentage
+    table = gsub(pattern = "& Value ", replacement = paste0(completions[i], " Completion"), table)
+    
+    # Add the modified table to the list
+    tables_list[[i]] <- table
+  }
+  # Merge all tables by the common columns, assuming the first column is the common identifier
+  latex_table = (create_unified_table_sunab(tables_list, caption = "", label = "") )
+  
+  
+  
+  # Write the table to a .tex file
+  sink(file_path)
+  cat(latex_table)
+  sink() 
+  
+  
+  return(unified_table)
+}
+
+
+# Define a function to create LaTeX table from model results
+sunab_latex_staggered <- function(models, caption, label) {
+  models= list(get('SA_math_0p'), get('SA_math_10p'), get('SA_math_50p'), get('SA_math_100p'))
+  # Extract estimates and standard errors from each model
+  results <- lapply(models, function(model) {
+    # Extract coefficients and standard errors
+    coef_summary <- summary(model)[["coeftable"]]
+    # Create a dataframe with relevant data
+    data.frame(
+      Estimate = coef_summary[, "Estimate"],
+      SE = coef_summary[, "Std. Error"],
+      row.names = rownames(coef_summary),
+      check.names = FALSE
+    )
+  })
+  
+  # Collect all row names
+  all_rows <- unique(unlist(lapply(results, rownames)))
+  
+  # Create a list to store data frames with all row names
+  complete_results <- lapply(results, function(df) {
+    df_full <- data.frame(
+      Estimate = rep(0, length(all_rows)),
+      SE = rep(0, length(all_rows)),
+      row.names = all_rows,
+      check.names = FALSE
+    )
+    df_full[rownames(df), ] <- df
+    df_full
+  })
+  # Combine the results into one data frame
+  library(tibble)
+  combined_results <- as.data.frame( do.call(cbind, complete_results) )
+  combined_results$Year = row.names(combined_results)
+  combined_results$Year = as.numeric(gsub(pattern = 'year::', '', combined_results$Year) )
+  row.names(combined_results) <- NULL
+  # combined_results = combined_results %>% arrange(Year)
+  # Ensure correct column names
+  num_models <- length(models)
+  colnames(combined_results) <- c(paste0(rep(c("Estimate", "SE"), num_models), "_", rep(1:num_models, each = 2)), "Year")
+  colnames(combined_results) <- make.unique(colnames(combined_results))
+  
+  combined_results = combined_results %>% arrange(Year)
+  # Start LaTeX table
+  latex_table <- "\\begin{table}[H]\n"
+  latex_table <- paste0(latex_table, "\\centering\n")
+  latex_table <- paste0(latex_table, "\\caption{", caption, "}\n")
+  latex_table <- paste0(latex_table, "\\label{", label, "}\n")
+  latex_table <- paste0(latex_table, "\\begin{tabular}{l")
+  
+  # Add column format
+  num_models <- length(models)
+  latex_table <- paste0(latex_table, paste(rep("c", num_models), collapse = ""))
+  latex_table <- paste0(latex_table, "}\n")
+  latex_table <- paste0(latex_table, "\\hline\n")
+  latex_table <- paste0(latex_table, "Relative Time Period")
+  
+  # Add column headers for each model
+  for (i in 1:num_models) {
+    latex_table <- paste0(latex_table, " & ", sprintf("%d\\%% Completion", (i - 1) * 10))
+  }
+  latex_table <- paste0(latex_table, " \\\\\n\\hline\n")
+  
+  # Add rows of estimates and SE
+  for (i in 1:nrow(combined_results)) {
+    latex_table <- paste0(latex_table, combined_results$Year[i])
+    for (j in 1:num_models) {
+      estimate_col <- paste0("Estimate_", j)
+      se_col <- paste0("SE_", j)
+      latex_table <- paste0(latex_table, " & ", sprintf("%.4f", combined_results[[estimate_col]][i]), " (", sprintf("%.4f", combined_results[[se_col]][i]), ")")
+    }
+    latex_table <- paste0(latex_table, " \\\\\n")
+    # if (i %% 2 == 1) {
+    #   latex_table <- paste0(latex_table, "\\hline\n")
+    # }
+  }
+  
+  latex_table <- paste0(latex_table, "\\hline\n \\end{tabular}\n")
+  latex_table <- paste0(latex_table, "\\end{table}")
+  
+  # Print the LaTeX table
+  cat(latex_table)
+}
+#######################################################
+# # Ejecutar el análisis de diferencias en diferencias
+Call_San <- function(data , outcome ="outcome: string",
+                     referemce_time = '' ,
+                     time_name = "time name: string",
+                     id_name = "",
+                     panel = T   ){
+  out <- att_gt(
+    yname = outcome, # Nombre de la variable de resultado
+    tname = referemce_time,    # Nombre de referencia de la variable de tiempo
+    idname = outcome,     # Nombre de la variable de identificación
+    gname = time_name, # Nombre de la variable de tiempo de tratamiento
+    data = data,   # Datos
+    control_group = "notyettreated",
+    est_method = "dr",  # Método de estimación (Doubly Robust en este caso)
+    panel = panel, 
+    bstrap=F, 
+    base_period = "universal"
+    # xformla=~DISTANCE
+  )
+  print(summary(out))
+  print(ggdid(out))
+  agg.simple <- aggte(out, type = "simple", na.rm = TRUE)
+  print(summary(agg.simple))
+  agg.es <- aggte(out, type = "dynamic", na.rm = TRUE)
+  summary(agg.es)
+  print(ggdid(agg.es))
+  return(list(out, agg.es))
+}
+
+
+
+s# Function to standardize scores
+standardize_scores <- function(data, score_column, standardized_column) {
+  data <- data %>%
+    group_by(cole_cod_dane_institucion, ANIO) %>%
+    mutate(
+      mean_score = mean(.data[[score_column]], na.rm = TRUE),
+      sd_score = sd(.data[[score_column]], na.rm = TRUE)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      {{standardized_column}} := (.data[[score_column]] - mean_score) / sd_score
+    ) %>%
+    select(-mean_score, -sd_score) # Remove intermediate columns
+  
+  return(data)
+}
+
+
 generate_file_name <- function(title) {
   # Remove special characters, spaces, and make lowercase
   cleaned_title <- gsub("[^[:alnum:]]", "_", title)
@@ -115,6 +436,8 @@ event_study_plot_sunab_2021 = function (out, seperate = TRUE, horizon = NULL, TI
     theme_w_did( )     + mynamestheme   
   print(P  )
 }
+
+
 SA_Result_table = function(model){
   sa_result = data.frame(model[["coeftable"]])
   sa_result$period = as.numeric( gsub("year::", "", row.names(sa_result) ))
@@ -175,6 +498,8 @@ create_latex_table <- function(result, caption = "Table caption", label = "tab:l
   
   return(latex_table)
 }
+
+
 plot_histogram_output <- function(data, output, heterogenity, plot_title) {
   data$output = data[[output]]
   data$heterogenity = data[[heterogenity]]
@@ -202,6 +527,8 @@ plot_histogram_output <- function(data, output, heterogenity, plot_title) {
   
   print(plot)
 }
+
+
 acumulative_treatment = function(data = data.frame(), year_treated='', ids = '', reference_title_date = '10% of the Concession Progress'){
   data$year_treated__ = data[[year_treated]]
   data$ids__ = data[[ids]]
@@ -269,6 +596,7 @@ balancing_data <- function(data=data.frame(), id = 'string: colname id',
   print(paste0("The number of unique periods of references are: " , length(unique(data$time_references__))))
   print(paste0("The number periods of references are: " , (paste0(sort(unique(data$time_references__)), collapse = ' ' ))))
   table((data$time_references__ ))
+  
   complete_ids <- data %>%
     group_by(Id_) %>%
     summarise(n_years = n_distinct(time_references__)) %>%
@@ -288,6 +616,7 @@ balancing_data <- function(data=data.frame(), id = 'string: colname id',
   return(data)
   
 } 
+
 plot_cohort_means <- function(data, year_treated) {
  
   # Define the custom colors
@@ -888,6 +1217,7 @@ SA_table = function( MODELO ) {
   library(stringi)
   
   estimator = 'Sun and Abraham (2020)'
+  MODELO = MODEL_SA_math
   a = etable(MODELO)
   a$term = rownames(a)
   
