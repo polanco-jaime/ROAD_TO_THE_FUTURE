@@ -5,3 +5,7 @@
 .bat
 *.parquet
 *apis.R
+*.png
+**/*.png
+*.Rda
+
