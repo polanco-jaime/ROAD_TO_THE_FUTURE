@@ -12,7 +12,7 @@ This study evaluates the impact of the road concessions program on education in 
 
 - :file_folder: __Files__:
      + [Working paper](Docs/ROAD_TO_THEFUTURE_IDENTIFYINGIMPACTS_OFROADS_ONEDUCATION_INCOLOMBIA.pdf)
-     + [Theoretical Model](Docs/Theoretical Model ROAD_TO_THEFUTURE_IDENTIFYINGIMPACTS_OFROADS_ONEDUCATION_INCOLOMBIA.pdf)	
+     + [Theoretical Model](Docs/Theoretical_Model.pdf)	
      + [Slides paper](Docs/02_ROAD_TO_THEFUTURE_IDENTIFYINGIMPACTS_OFROADS_ONEDUCATION_INCOLOMBIA.pdf)
      + [Slides paper 20'](Docs/03_ROAD_TO_THEFUTURE_IDENTIFYINGIMPACTS_OFROADS_ONEDUCATION_INCOLOMBIA.pdf)
      + [Slides paper 15'](Docs/15_min_ROAD_TO_THE_FUTURE.pdf)
