@@ -43,6 +43,7 @@ sqldf::sqldf("SELECT   cole_naturaleza , COUNT(DISTINCT estu_consecutivo_sbtyt) 
  
 data = subset(data, data$cole_naturaleza =="PUBL")
 
+
 sqldf::sqldf("SELECT   cole_naturaleza , COUNT(DISTINCT cole_cod_d) TOT FROM data group by 1")
 
 
