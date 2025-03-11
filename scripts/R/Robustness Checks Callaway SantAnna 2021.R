@@ -15,45 +15,77 @@ sd_math_cs_ic = Call_San(data= data_ic,
 
  
 print( paste0( round(sd_math_cs_ic[[2]][["overall.att"]], 4), ' (', round(sd_math_cs_ic[[2]][["overall.se"]], 4), ')'))
-
-sd_math_cs_ai = Call_San(data= data_ai,
+sd_math_cs_ic[[1]][["Wpval"]][1,1]
+data_ai$sd_reading_i
+sd_math_cs_ai = Call_San_wald(data= data_ai,
                  outcome ="sd_math_i",
                  referemce_time = 'year' ,
                  time_name = "year_treated_ai",
                  id_name = "cole_cod_dane_institucion" ,
-                 panel = F  )
-
+                 panel = F ,
+                 max_previus= 3)
+Call_San_wald(data= data_ai,
+              outcome ="sd_reading_i",
+              referemce_time = 'year' ,
+              time_name = "year_treated_ai",
+              id_name = "cole_cod_dane_institucion" ,
+              panel = F ,
+              max_previus= 4)
 print( paste0( round(sd_math_cs_ai[[2]][["overall.att"]], 4), ' (', round(sd_math_cs_ai[[2]][["overall.se"]], 4), ')'))
 
+sd_math_cs_ai[[1]][["Wpval"]][1,1]
 
-sd_math_cs_10p = Call_San(data= data_10p,
+sd_math_cs_10p = Call_San_wald(data= data_10p,
                   outcome ="sd_math_i",
                   referemce_time = 'year' ,
                   time_name = "year_treated_10p",
                   id_name = "cole_cod_dane_institucion" ,
-                  panel = F  )
-
+                  panel = F  ,
+                  max_previus= 6)
+Call_San_wald(data= data_10p,
+              outcome ="sd_reading_i",
+              referemce_time = 'year' ,
+              time_name = "year_treated_10p",
+              id_name = "cole_cod_dane_institucion" ,
+              panel = F  ,
+              max_previus= 6)
 print( paste0( round(sd_math_cs_10p[[2]][["overall.att"]], 4), ' (', round(sd_math_cs_10p[[2]][["overall.se"]], 4), ')'))
+sd_math_cs_10p[[1]][["Wpval"]][1,1]
 
-
-sd_math_cs_50p = Call_San(data= data_50p,
+sd_math_cs_50p = Call_San_wald(data= data_50p,
                   outcome ="sd_math_i",
                   referemce_time = 'year' ,
                   time_name = "year_treated_50p",
                   id_name = "cole_cod_dane_institucion" ,
-                  panel = F  )
-
+                  panel = F , 
+                  max_previus=5  )
+Call_San_wald(data= data_50p,
+              outcome ="sd_reading_i",
+              referemce_time = 'year' ,
+              time_name = "year_treated_50p",
+              id_name = "cole_cod_dane_institucion" ,
+              panel = F , 
+              max_previus=5  )
 print( paste0( round(sd_math_cs_50p[[2]][["overall.att"]], 4), ' (', round(sd_math_cs_50p[[2]][["overall.se"]], 4), ')'))
 
 
-sd_math_cs_100p = Call_San(data= data_100p,
+sd_math_cs_100p = Call_San_wald(data= data_100p,
                           outcome ="sd_math_i",
                           referemce_time = 'year' ,
                           time_name = "year_treated_100p",
                           id_name = "cole_cod_dane_institucion" ,
                           panel = F  )
+
+Call_San_wald(data= data_100p,
+              outcome ="sd_reading_i",
+              referemce_time = 'year' ,
+              time_name = "year_treated_100p",
+              id_name = "cole_cod_dane_institucion" ,
+              panel = F , 
+              max_previus=3  )
 print( paste0( round(sd_math_cs_100p[[2]][["overall.att"]], 4), ' (', round(sd_math_cs_100p[[2]][["overall.se"]], 4), ')'))
 
+sd_math_cs_100p[[1]][["Wpval"]][1,1]
 
 #> Overall summary of ATT's based on event-study/dynamic aggregation:  
 

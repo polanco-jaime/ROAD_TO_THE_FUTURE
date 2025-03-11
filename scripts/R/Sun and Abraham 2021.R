@@ -49,8 +49,8 @@ sunab_att_table('SA_math_0p')
 #10% of the Concession Progress
 #  ref.p= c(  -1:2, -2)
 ###################################################################
-## Math and Reading Results by period
-#10% of the Concession Progress
+#### Math and Reading Results by period ####
+##### 10% of the Concession Progress ####
  
 ref_point_10p =  c(  -5:(-5+length(ref_point)) ) 
 length(ref_point_10p)
@@ -75,7 +75,7 @@ etable(SA_math_10p, SA_reading_10p)
 
 sunab_att_table('SA_math_10p')
 sunab_att_table('SA_reading_10p')
-#50% of the Concession Progress  
+##### 50% of the Concession Progress   ####
 ref_point_50p =  c(  -6:(-6+length(ref_point)) ) 
 length(ref_point_50p)
 
@@ -96,10 +96,10 @@ summary(SA_reading_50p, agg = "ATT")
 iplot(SA_reading_50p)
 summary(SA_reading_50p)
 
-#100% of the Concession Progress 
+##### 100% of the Concession Progress  ####
 
 SA_math_100p = feols(sd_math_i ~#cole_jornada+estu_ocup_madre_category+
-                       sunab(year_treated_100p, year,  ref.p= c(  -11:0)   )
+                       sunab(year_treated_100p, year, ref.p= c(  -11:0)   )
                      |
                       cole_cod_dane_institucion+  year,
                     cluster = ~cole_cod_dane_institucion+NOMBRE,
@@ -115,7 +115,7 @@ SA_reading_100p = feols(sd_reading_i ~ #cole_jornada+estu_ocup_madre_category+
                      data = data_100p )
  
 iplot(SA_reading_100p)
-###################################################
+
 library(dplyr)
 
 

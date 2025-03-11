@@ -286,11 +286,43 @@ sunab_latex_staggered <- function(models, caption, label) {
 }
 #######################################################
 # # Ejecutar el análisis de diferencias en diferencias
+Call_San_wald <- function(data , outcome ="outcome: string",
+                          referemce_time = '' ,
+                          time_name = "time name: string",
+                          id_name = "",
+                          panel = T ,
+                          max_previus = 4){
+  temp=data$year - data[[time_name]]
+  out <- att_gt(
+    yname = outcome, # Nombre de la variable de resultado
+    tname = referemce_time,    # Nombre de referencia de la variable de tiempo
+    idname = outcome,     # Nombre de la variable de identificación
+    gname = time_name, # Nombre de la variable de tiempo de tratamiento
+    data = data[temp>=-max_previus , ],   # Datos
+    control_group = "notyettreated",
+    est_method = "dr",  # Método de estimación (Doubly Robust en este caso)
+    panel = panel, 
+    bstrap=F, 
+    base_period =  "universal",
+    # anticipation=0
+    # xformla=~DISTANCE
+  )
+  print(summary(out))
+  print(ggdid(out))
+  agg.simple <- aggte(out, type = "simple", na.rm = TRUE)
+  print(summary(agg.simple))
+  agg.es <- aggte(out, type = "dynamic",   na.rm = TRUE)
+  summary(agg.es)
+  print(ggdid(agg.es))
+  return(list(out, agg.es))
+}
+
 Call_San <- function(data , outcome ="outcome: string",
                      referemce_time = '' ,
                      time_name = "time name: string",
                      id_name = "",
                      panel = T   ){
+  temp=
   out <- att_gt(
     yname = outcome, # Nombre de la variable de resultado
     tname = referemce_time,    # Nombre de referencia de la variable de tiempo
@@ -301,14 +333,15 @@ Call_San <- function(data , outcome ="outcome: string",
     est_method = "dr",  # Método de estimación (Doubly Robust en este caso)
     panel = panel, 
     bstrap=F, 
-    base_period = "universal"
+    base_period =  "universal",
+    # anticipation=0
     # xformla=~DISTANCE
   )
   print(summary(out))
   print(ggdid(out))
   agg.simple <- aggte(out, type = "simple", na.rm = TRUE)
   print(summary(agg.simple))
-  agg.es <- aggte(out, type = "dynamic", na.rm = TRUE)
+  agg.es <- aggte(out, type = "dynamic",min_e = -2, max_e = 6,   na.rm = TRUE)
   summary(agg.es)
   print(ggdid(agg.es))
   return(list(out, agg.es))
@@ -316,7 +349,7 @@ Call_San <- function(data , outcome ="outcome: string",
 
 
 
-s# Function to standardize scores
+# Function to standardize scores
 standardize_scores <- function(data, score_column, standardized_column) {
   data <- data %>%
     group_by(cole_cod_dane_institucion, ANIO) %>%

@@ -21,8 +21,65 @@ hist(data_ai[data_ai$treat_==0, ]$math_i)
 # data_ =data_[ , c("sd_reading_i", "reading_i", "sd_math_i", "math_i"   , "treat_" , 
 #                   'year_treated_100p', 'year_treated_50p', 'year_treated_10p', 'year_treated_ai', 'year_treated_ic',  "year" ,
 #                   "cole_cod_d", "estu_trabaja",  "cole_naturaleza"   , "buffer_km", "DISTANCE"  )]
+#### Baseline ####
+condition_baseline = ( data$time_to_treat_ic<0    )
 
+baseline = data[ condition_baseline==T   , ]
+baseline$year_treated_ic
+  table(data$estu_trabaja)
+sqldf::sqldf(" select YEAR, 
+CAST(ROUND(AVG(sd_reading_i)/1000, 4) AS STRING) || ' (' read ,
+CAST(ROUND(STDEV(sd_reading_i)/1000, 4) AS STRING)  di, ')' ng, 
 
+CAST(ROUND(AVG(sd_math_i), 4) AS STRING) || ' (' math,
+CAST(ROUND(STDEV(sd_math_i), 4) AS STRING)  _, ')' s_i ,
+
+ ROUND(AVG(SB_PRO / TOT_ESTI), 4)   human ,
+CAST(ROUND(STDEV(SB_PRO / TOT_ESTI), 4) AS STRING)  capital, ')' idenx,
+ 
+      ROUND( AVG(Trabaja / TOT_ESTI), 4)   child,
+      ROUND(   STDEV(Trabaja / TOT_ESTI), 4)  labor,
+ 
+       ROUND( AVG( inse), 4)   in_,
+       ROUND(   STDEV(inse), 4)  se
+from (
+ SELECT  year_treated_ic YEAR, 
+            (round( avg(DISTANCE) ,6)) sd_reading_i, 
+            (round( avg(sd_math_i) ,6)) sd_math_i, 
+            
+            count(distinct ESTU_CONSECUTIVO)  TOT_ESTI,
+            cast(SUM( IFNULL(SB_PRO, 0) ) as float64) SB_PRO,
+            
+            cast(SUM( IFNULL(estu_trabaja, 0) ) as float64)  Trabaja, 
+            round(AVG(ESTU_INSE_INDIVIDUAL) ,4) inse
+            
+            
+            FROM baseline
+            WHERE DISTANCE <= 1500
+            AND YEAR != 2010 and sd_reading_i is not null 
+            GROUP BY year_treated_ic,COLE_COD_ICFES
+             )
+             GROUP BY YEAR")
+# --  CAST(ROUND(AVG(sd_reading_i), 4) AS STRING) || ' (',
+# --  CAST(ROUND(STDEV(sd_reading_i), 4) AS STRING)  sd_reading_i,
+# 
+# --CAST(ROUND(AVG(sd_math_i), 4) AS STRING) || ' (', --
+#   --CAST(ROUND(STDEV(sd_math_i), 4) AS STRING)  sd_math_i,
+# 
+# --                    CAST(ROUND(AVG(estu_edad), 4) AS STRING) || ' (',
+# --                 CAST(ROUND(STDEV(estu_edad), 4) AS STRING)  estu_edad
+# 
+# 
+# --  round(cast(count(distinct ESTU_CONSECUTIVO) as float64),4) tot_stu,
+# --round(SUM( IFNULL(estu_trabaja, 0) ),4) sum_estu_trabaja,
+# --round(cast(SUM( IFNULL(estu_trabaja, 0) ) as float64) /cast(count(distinct ESTU_CONSECUTIVO) as float64) ,4) fract_estu_trabaja,
+# --round((cast(SUM( IFNULL(SB_PRO, 0) ) as float64)  )/cast(count(distinct ESTU_CONSECUTIVO) as float64),4) fract_HE,            
+# --round(AVG(ESTU_INSE_INDIVIDUAL) ,4) inse, 
+# --round(count(distinct NOMBRE),4) roads
+table(is.na(baseline$COLE_COD_ICFES))
+
+#### ####
+mean( data_ai[ condition_baseline==T   , ]$reading_i )
 # Calcular el promedio por cada cole_cod_d y variables de tratamiento
 promedios <- data_ai %>%
   group_by(cole_cod_d, year_treated_10p  #,year_treated_100p, year_treated_50p, year_treated_ai, year_treated_ic
